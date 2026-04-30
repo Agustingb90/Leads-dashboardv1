@@ -3,11 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BAST · Detail Intelligence v6 — Merge Pipedrive + NOWs</title>
+<title>BAST · Detail Intelligence v6</title>
+<meta name="description" content="BAST v6 · Hub Offers pricing intelligence · Pipedrive funnel + NOWs structure">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%238B5CF6'/%3E%3Ctext x='16' y='22' text-anchor='middle' fill='white' font-family='Inter' font-weight='700' font-size='16'%3EB%3C/text%3E%3C/svg%3E">
 </head>
 <body data-theme="dark">
 
@@ -33,7 +35,7 @@
     <a href="#cruces" class="nav-item" data-view="cruces">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 7l10 10M17 7L7 17"/></svg>
       Cruces oferta + wish
-      <span class="badge badge-new">50</span>
+      <span class="badge badge-new">22</span>
     </a>
     <a href="#productos" class="nav-item" data-view="productos">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
@@ -48,15 +50,27 @@
       Fuentes
     </a>
 
+    <div class="nav-section">Growth</div>
+    <a href="#campaigns" class="nav-item" data-view="campaigns">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>
+      Campaigns
+      <span class="badge badge-soon">Beta</span>
+    </a>
+
     <div class="nav-section">Integraciones</div>
-    <a href="https://app.hubspot.com/contacts/148358528/" target="_blank" class="nav-item nav-ext">
+    <a href="https://app.hubspot.com/contacts/148358528/" target="_blank" rel="noopener" class="nav-item nav-ext">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 18h6M18 9v6"/></svg>
       HubSpot CRM
       <svg class="ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
     </a>
-    <a href="https://app.slack.com/client/T0B05EVQ19A/C0B08DKCUBU" target="_blank" class="nav-item nav-ext">
+    <a href="https://app.slack.com/client/T0B05EVQ19A/C0B08DKCUBU" target="_blank" rel="noopener" class="nav-item nav-ext">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="10" width="4" height="4" rx="2"/><rect x="10" y="3" width="4" height="4" rx="2"/><rect x="17" y="10" width="4" height="4" rx="2"/><rect x="10" y="17" width="4" height="4" rx="2"/></svg>
       Slack
+      <svg class="ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
+    </a>
+    <a href="https://drive.google.com/drive/folders/1e48ZJaKlnGbYIFEuPhu2RnLFzjLS5p3R" target="_blank" rel="noopener" class="nav-item nav-ext">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+      Google Drive
       <svg class="ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
     </a>
   </nav>
@@ -85,7 +99,7 @@
     </div>
     <div class="topbar-tabs">
       <button class="tab-pill active" data-tab="overview">Overview</button>
-      <button class="tab-pill" data-tab="setup">Setup dashboard</button>
+      <button class="tab-pill" data-tab="setup">Setup</button>
     </div>
     <div class="topbar-right">
       <button class="btn-ghost"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Nueva consulta</button>
@@ -93,14 +107,14 @@
     </div>
   </header>
 
-  <!-- ============== VIEW · DETAIL (default) ============== -->
+  <!-- ============== VIEW · DETAIL ============== -->
   <section class="view active" id="view-detail">
     <div class="view-shell">
       <div class="view-main">
         <div class="page-head">
           <div>
             <h1>Matriz de precios</h1>
-            <p class="subtle">Cada fila consolida 6 fuentes · catálogo, ofertas, sales, wholesale 1/2, trader, MSRP</p>
+            <p class="subtle">Cada fila consolida 6 fuentes · catálogo Hub Offers, ofertas, sales, wholesale 1/2, trader y MSRP</p>
           </div>
           <div class="filters">
             <select id="detailParam">
@@ -113,50 +127,13 @@
             </select>
             <select id="detailCategory">
               <option value="">Todas las categorías</option>
-              <option>Liquor</option>
-              <option>Spirits</option>
-              <option>FMCG</option>
-              <option>Tobacco</option>
             </select>
             <button class="btn-ghost">Exportar CSV</button>
           </div>
         </div>
 
-        <!-- KPIs hero -->
-        <div class="hero-kpi-grid">
-          <div class="hero-kpi g-violet">
-            <div class="hk-label">SKUs activos</div>
-            <div class="hk-value">15.232</div>
-            <div class="hk-foot">catálogo Heineman</div>
-          </div>
-          <div class="hero-kpi g-blue">
-            <div class="hk-label">Con WS1</div>
-            <div class="hk-value">8.412</div>
-            <div class="hk-foot">55,2% cobertura</div>
-          </div>
-          <div class="hero-kpi g-cyan">
-            <div class="hk-label">Con MSRP</div>
-            <div class="hk-value">11.058</div>
-            <div class="hk-foot">72,6% cobertura</div>
-          </div>
-          <div class="hero-kpi g-green">
-            <div class="hk-label">Sales en pipeline</div>
-            <div class="hk-value">2.029</div>
-            <div class="hk-foot">€1,9M valor estimado</div>
-          </div>
-          <div class="hero-kpi g-pink">
-            <div class="hk-label">Margen promedio</div>
-            <div class="hk-value">24,8%</div>
-            <div class="hk-foot">vs precio más bajo</div>
-          </div>
-          <div class="hero-kpi g-amber">
-            <div class="hk-label">Oportunidad total</div>
-            <div class="hk-value">€487K</div>
-            <div class="hk-foot">margen acumulable</div>
-          </div>
-        </div>
+        <div class="hero-kpi-grid" id="heroKpiGrid"></div>
 
-        <!-- Funnel Pipedrive style + categorías -->
         <div class="detail-secondary">
           <div class="card funnel-card">
             <div class="section-head">
@@ -166,23 +143,25 @@
             <div class="funnel-blocks" id="funnelBlocks"></div>
           </div>
           <div class="card">
-            <div class="section-head"><h3>Top categorías</h3></div>
+            <div class="section-head">
+              <h3>Top categorías</h3>
+              <span class="subtle">click para filtrar</span>
+            </div>
             <div id="catBars" class="cat-bars"></div>
           </div>
         </div>
 
-        <!-- Tabla detalle -->
         <div class="card detail-table-card">
           <div class="section-head">
             <h3>Detail rows · todas las fuentes consolidadas</h3>
-            <span class="subtle">15.232 filas · paginado</span>
+            <span class="subtle" id="detailRowCount">—</span>
           </div>
           <div class="detail-table-wrap">
             <table class="detail-table">
               <thead>
                 <tr class="th-group">
                   <th colspan="3" class="grp-item">Item</th>
-                  <th colspan="2" class="grp-offer">Offers we have</th>
+                  <th colspan="2" class="grp-offer">Hub Offers</th>
                   <th colspan="3" class="grp-sale">Sales / Need</th>
                   <th class="grp-ws1">WS1</th>
                   <th class="grp-ws2">WS2</th>
@@ -207,7 +186,6 @@
         </div>
       </div>
 
-      <!-- Filtro lateral derecho: Mes -->
       <aside class="period-filter">
         <div class="pf-head">
           <span>Período</span>
@@ -222,12 +200,19 @@
           <label class="pf-row"><input type="checkbox" data-month="2026-04" checked><span>Abril 2026</span></label>
         </div>
         <div class="pf-divider"></div>
-        <div class="pf-head"><span>Categoría</span></div>
+        <div class="pf-head"><span>Fuente de oferta</span></div>
         <div class="pf-list">
-          <label class="pf-row"><input type="checkbox" checked><span>Liquor</span></label>
-          <label class="pf-row"><input type="checkbox" checked><span>Spirits</span></label>
-          <label class="pf-row"><input type="checkbox"><span>FMCG</span></label>
-          <label class="pf-row"><input type="checkbox"><span>Tobacco</span></label>
+          <label class="pf-row"><input type="checkbox" checked><span>Hub Offers</span></label>
+          <label class="pf-row"><input type="checkbox" checked><span>Wholesale 1</span></label>
+          <label class="pf-row"><input type="checkbox" checked><span>Wholesale 2</span></label>
+          <label class="pf-row"><input type="checkbox"><span>Trader pool</span></label>
+        </div>
+        <div class="pf-divider"></div>
+        <div class="pf-head"><span>Estado</span></div>
+        <div class="pf-list">
+          <label class="pf-row"><input type="checkbox" checked><span>Donde somos más baratos</span></label>
+          <label class="pf-row"><input type="checkbox"><span>Sin price discovery</span></label>
+          <label class="pf-row"><input type="checkbox"><span>Con sale activa</span></label>
         </div>
       </aside>
     </div>
@@ -238,20 +223,28 @@
     <div class="page-head">
       <div>
         <h1>Cruces oferta + wish</h1>
-        <p class="subtle">Productos con oferta activa que coinciden con wishes registradas</p>
+        <p class="subtle">Productos con oferta activa que coinciden con wishes registradas en HubSpot</p>
+      </div>
+      <div class="filters">
+        <select>
+          <option>Todos los proveedores</option>
+          <option>Pesco Supply BV</option>
+          <option>Tradeling</option>
+          <option>Sarmad Trading</option>
+        </select>
       </div>
     </div>
 
     <div class="kpi-grid-3">
       <div class="card kpi-soft">
         <div class="kpi-soft-label">Matches potenciales</div>
-        <div class="kpi-soft-value highlight-cyan">50</div>
+        <div class="kpi-soft-value highlight-cyan">22</div>
         <div class="kpi-soft-foot">oferta + wish del mismo SKU</div>
       </div>
       <div class="card kpi-soft">
         <div class="kpi-soft-label">Top proveedores</div>
         <div class="kpi-soft-value">4</div>
-        <div class="kpi-soft-foot">con mayor número de ofertas</div>
+        <div class="kpi-soft-foot">con mayor número de ofertas activas</div>
       </div>
       <div class="card kpi-soft">
         <div class="kpi-soft-label">Marcas con wish</div>
@@ -263,7 +256,7 @@
     <div class="card">
       <div class="section-head">
         <h3>Cruces oferta + wish</h3>
-        <span class="subtle">50 matches · ordenados por demanda</span>
+        <span class="subtle">ordenados por número de ofertas</span>
       </div>
       <div class="table-wrap">
         <table class="cruces-table">
@@ -276,7 +269,7 @@
               <th class="num">Margen</th>
               <th class="num"># Ofertas</th>
               <th class="num"># Wishes</th>
-              <th></th>
+              <th class="num"></th>
             </tr>
           </thead>
           <tbody id="crucesTbody"></tbody>
@@ -290,7 +283,7 @@
     <div class="page-head">
       <div>
         <h1>Consultas ad-hoc</h1>
-        <p class="subtle">Búsqueda libre por código, marca, proveedor o categoría</p>
+        <p class="subtle">Búsqueda libre por código de barras, marca, producto o categoría</p>
       </div>
     </div>
 
@@ -298,69 +291,144 @@
       <div class="consultas-input-row">
         <div class="search-big">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          <input type="text" id="consultaInput" placeholder="Escribe código de barras, marca, proveedor o categoría">
+          <input type="text" id="consultaInput" placeholder="Escribe código de barras, marca, producto o categoría">
         </div>
-        <button class="btn-primary">Consultar</button>
+        <button class="btn-primary" id="consultaBtn">Consultar</button>
       </div>
       <div class="chip-row">
         <span class="chip-label">Ejemplos:</span>
-        <button class="chip" data-chip="3349668424108">3349668424108</button>
         <button class="chip" data-chip="Penhaligons">Penhaligons</button>
-        <button class="chip" data-chip="Moving Spirits">Moving Spirits</button>
-        <button class="chip" data-chip="Fragrance">Fragrance</button>
+        <button class="chip" data-chip="Liquor">Liquor</button>
+        <button class="chip" data-chip="Xerjoff">Xerjoff</button>
+        <button class="chip" data-chip="Spirits">Spirits</button>
+        <button class="chip" data-chip="Tom Ford">Tom Ford</button>
       </div>
     </div>
 
     <div class="card empty-results" id="consultaEmpty">
       <div class="empty-icon-wrap">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5" style="color:var(--accent-violet)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       </div>
       <h3>Sin consulta activa</h3>
       <p>Escribe un término o seleccioná un ejemplo para empezar.</p>
+    </div>
+
+    <div id="consultaResults"></div>
+  </section>
+
+  <!-- ============== VIEW · CAMPAIGNS ============== -->
+  <section class="view" id="view-campaigns">
+    <div class="page-head">
+      <div>
+        <h1>Campaigns</h1>
+        <p class="subtle">Planificación de outreach, scrapeo y búsqueda de contactos · espacio en construcción</p>
+      </div>
+      <div class="filters">
+        <button class="btn-primary">+ Nueva campaña</button>
+      </div>
+    </div>
+
+    <div class="campaigns-tabs">
+      <button class="campaigns-tab active" data-c-tab="all">Todas</button>
+      <button class="campaigns-tab" data-c-tab="outreach">Outreach</button>
+      <button class="campaigns-tab" data-c-tab="scraping">Scraping</button>
+      <button class="campaigns-tab" data-c-tab="contacts">Búsqueda de contactos</button>
+    </div>
+
+    <div class="kpi-grid-3" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="card kpi-soft">
+        <div class="kpi-soft-label">Campañas activas</div>
+        <div class="kpi-soft-value">3</div>
+        <div class="kpi-soft-foot">de 5 totales</div>
+      </div>
+      <div class="card kpi-soft">
+        <div class="kpi-soft-label">Contactos cargados</div>
+        <div class="kpi-soft-value highlight-cyan">2.135</div>
+        <div class="kpi-soft-foot">en el último mes</div>
+      </div>
+      <div class="card kpi-soft">
+        <div class="kpi-soft-label">Tasa de respuesta</div>
+        <div class="kpi-soft-value">7,4%</div>
+        <div class="kpi-soft-foot">promedio ponderado</div>
+      </div>
+      <div class="card kpi-soft">
+        <div class="kpi-soft-label">Reuniones agendadas</div>
+        <div class="kpi-soft-value">31</div>
+        <div class="kpi-soft-foot">trimestre actual</div>
+      </div>
+    </div>
+
+    <div class="campaigns-grid" id="campaignsGrid"></div>
+
+    <div class="card" style="margin-top: 18px;">
+      <div class="section-head">
+        <h3>Próximamente</h3>
+        <span class="subtle">roadmap de la sección</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;color:var(--text-muted);font-size:12.5px">
+        <div>
+          <div style="color:var(--text-primary);font-weight:600;margin-bottom:6px">Editor de campañas</div>
+          Plantillas de email, LinkedIn y WhatsApp · personalización por variables · A/B testing.
+        </div>
+        <div>
+          <div style="color:var(--text-primary);font-weight:600;margin-bottom:6px">Scraping configurable</div>
+          Selección de fuentes (Google Maps, LinkedIn, directorios sectoriales) · cron jobs · output a HubSpot.
+        </div>
+        <div>
+          <div style="color:var(--text-primary);font-weight:600;margin-bottom:6px">Pipeline de contactos</div>
+          Búsqueda guiada por país, categoría y tipo de empresa · enrichment automático · scoring.
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- ============== VIEW · PRODUCTOS · placeholder ============== -->
   <section class="view" id="view-productos">
-    <div class="page-head"><div><h1>Productos</h1><p class="subtle">Catálogo Heineman maestro</p></div></div>
+    <div class="page-head">
+      <div><h1>Productos</h1><p class="subtle">Catálogo Hub Offers maestro · listado plano sin cruces</p></div>
+    </div>
     <div class="card empty-state">
+      <div class="empty-icon-wrap">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--accent-violet)"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+      </div>
       <h3>Vista catálogo</h3>
-      <p>Listado plano de los 15.232 SKUs sin cruces.</p>
+      <p>Listado plano de los SKUs sin cruces · próximamente.</p>
     </div>
   </section>
 
-  <!-- ============== VIEW · FUENTES · placeholder ============== -->
+  <!-- ============== VIEW · FUENTES ============== -->
   <section class="view" id="view-fuentes">
-    <div class="page-head"><div><h1>Fuentes</h1><p class="subtle">Origen de los datos del dashboard</p></div></div>
+    <div class="page-head">
+      <div><h1>Fuentes</h1><p class="subtle">Origen y estado de los datos del dashboard</p></div>
+    </div>
     <div class="sources-grid">
       <div class="card source-card">
         <div class="source-icon" style="background:linear-gradient(135deg,#1D4ED8,#3B82F6)">S</div>
         <h3>Supabase</h3>
-        <p class="subtle">Vista materializada · refresh cada hora</p>
+        <p>Vista materializada · refresh cada hora</p>
         <code>detail_intelligence_v</code>
       </div>
       <div class="card source-card">
         <div class="source-icon" style="background:linear-gradient(135deg,#BE185D,#EC4899)">H</div>
         <h3>HubSpot</h3>
-        <p class="subtle">CRM · contactos y deals</p>
+        <p>CRM · contactos, deals y wishes</p>
         <code>Hub 148358528</code>
       </div>
       <div class="card source-card">
         <div class="source-icon" style="background:linear-gradient(135deg,#047857,#10B981)">D</div>
         <h3>Google Drive</h3>
-        <p class="subtle">Listas NOW · refresh manual</p>
+        <p>Listas NOW · refresh manual</p>
         <code>Folder 1e48ZJa...</code>
       </div>
       <div class="card source-card">
         <div class="source-icon" style="background:linear-gradient(135deg,#B45309,#F59E0B)">W</div>
         <h3>Wix</h3>
-        <p class="subtle">Catálogo público</p>
+        <p>Catálogo público</p>
         <code>tradinglead.net</code>
       </div>
     </div>
   </section>
 
-  <!-- ============== Footer Pipedrive style ============== -->
   <footer class="page-footer">
     <div class="footer-left">BAST Detail Intelligence v6 · es-ES · EUR · YYYY-MM-DD</div>
     <div class="footer-links">
