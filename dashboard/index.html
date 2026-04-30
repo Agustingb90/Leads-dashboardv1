@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAST · Big Analysis System for Traders</title>
+<meta name="description" content="Mock visual del dashboard BAST — pipeline, pricing competitivo, listas NOW, ofertas realizadas, leads dashboard, mapa global con drill-down.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%233B82F6'/%3E%3Ctext x='16' y='22' text-anchor='middle' fill='white' font-family='Inter' font-weight='700' font-size='16'%3EB%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo">
+    <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+      <rect width="32" height="32" rx="7" fill="url(#g1)"/>
+      <path d="M9 8h8c3 0 5 2 5 4.5 0 1.8-1 3-2.5 3.5C21.5 16.5 23 18 23 20c0 2.5-2 4-5 4H9V8z" stroke="white" stroke-width="2" fill="none"/>
+      <defs><linearGradient id="g1" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#3B82F6"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs>
+    </svg>
+    <div>
+      <div class="logo-title">BAST</div>
+      <div class="logo-sub">Trading Lead</div>
+    </div>
+  </div>
+
+  <nav>
+    <div class="nav-section">Workspace</div>
+    <a href="#home" class="nav-item active" data-view="home">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Home · Pricing
+    </a>
+    <a href="#pipeline" class="nav-item" data-view="pipeline">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Pipeline
+    </a>
+    <a href="#matches" class="nav-item" data-view="matches">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      Matches calientes
+      <span class="badge badge-hot">12</span>
+    </a>
+    <a href="#map" class="nav-item" data-view="map">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/><path d="M8 2v16M16 6v16"/></svg>
+      Mapa global
+    </a>
+    <a href="#health" class="nav-item" data-view="health">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      Health del sistema
+    </a>
+
+    <a href="#intel" class="nav-item" data-view="intel">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h12a2 2 0 012 2v14H6a2 2 0 01-2-2V4z"/><path d="M18 8h2a2 2 0 012 2v8a2 2 0 01-2 2"/><path d="M8 8h6M8 12h6M8 16h4"/></svg>
+      Market Intelligence
+      <span class="badge badge-live">10</span>
+    </a>
+
+    <div class="nav-section">Datos</div>
+    <a href="#listas" class="nav-item" data-view="listas">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11H1l8-8 8 8h-8v8z" transform="rotate(45 9 11)"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      Listas NOW
+      <span class="badge" id="badgeListas">0</span>
+    </a>
+    <a href="#detail" class="nav-item" data-view="detail">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+      Detail Intelligence
+      <span class="badge badge-new">NEW</span>
+    </a>
+    <a href="#leads" class="nav-item" data-view="leads">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      Leads Dashboard
+      <span class="badge" id="badgeLeads">0</span>
+    </a>
+    <a href="#ofertas" class="nav-item" data-view="ofertas">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+      Ofertas realizadas
+    </a>
+    <a href="#catalog" class="nav-item" data-view="catalog">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+      Catálogo Heineman
+    </a>
+    <a href="#contacts" class="nav-item" data-view="contacts">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      Contactos
+      <span class="badge">2.7k</span>
+    </a>
+
+    <div class="nav-section">Automatización</div>
+    <a href="#agents" class="nav-item" data-view="agents">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg>
+      Agentes
+      <span class="badge badge-live" id="badgeAgents">live</span>
+    </a>
+    <a href="#workflows" class="nav-item" data-view="workflows">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+      Workflows n8n
+    </a>
+
+    <div class="nav-section">Integraciones</div>
+    <a href="https://app.hubspot.com/contacts/148358528/" target="_blank" rel="noopener" class="nav-item nav-ext">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 18h6M18 9v6"/></svg>
+      HubSpot CRM
+      <svg class="ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
+    </a>
+    <a href="https://app.slack.com/client/T0B05EVQ19A/C0B08DKCUBU" target="_blank" rel="noopener" class="nav-item nav-ext">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="10" width="4" height="4" rx="2"/><rect x="10" y="3" width="4" height="4" rx="2"/><rect x="17" y="10" width="4" height="4" rx="2"/><rect x="10" y="17" width="4" height="4" rx="2"/><path d="M10 5v14M5 10h14"/></svg>
+      Slack · Tradinglead
+      <svg class="ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
+    </a>
+    <a href="https://drive.google.com/drive/folders/1e48ZJaKlnGbYIFEuPhu2RnLFzjLS5p3R" target="_blank" rel="noopener" class="nav-item nav-ext">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+      Google Drive
+      <svg class="ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
+    </a>
+  </nav>
+
+  <div class="user-card">
+    <div class="avatar">A</div>
+    <div>
+      <div class="user-name">Atlas</div>
+      <div class="user-mail">atlas@tradinglead.net</div>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div class="search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Buscar prospects, productos, países..." id="globalSearch">
+      <kbd>⌘K</kbd>
+    </div>
+    <div class="topbar-right">
+      <button class="btn-ghost btn-with-kbd" id="btnQuickQuote" title="Cotización rápida">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        Quick Quote <kbd>⌘Q</kbd>
+      </button>
+      <button class="btn-ghost btn-with-kbd" id="btnMarketSearch" title="Búsqueda global">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        Search <kbd>⌘K</kbd>
+      </button>
+      <button class="btn-ghost" title="Notificaciones"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><span class="dot"></span></button>
+      <button class="btn-primary" id="btnNewBrief">+ Nuevo brief <kbd class="kbd-on-primary">⌘N</kbd></button>
+    </div>
+  </header>
+
+  <!-- ========== HOME · PRICING ========== -->
+  <section class="view active" id="view-home">
+    <div class="page-head">
+      <div>
+        <h1>Home · Pricing competitivo</h1>
+        <p class="subtle">Heineman <strong>Net Price</strong> vs precios de competencia (Pesco Supply BV, ofertas de prospects)</p>
+      </div>
+      <div class="filters">
+        <select id="onlyCheaperFilter">
+          <option value="cheaper">Sólo donde somos más baratos</option>
+          <option value="all">Todas las coincidencias</option>
+        </select>
+        <button class="btn-ghost">Exportar análisis</button>
+      </div>
+    </div>
+
+    <div class="kpi-grid" id="pricingKpis"></div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head">
+          <h3>Top oportunidades · margen %</h3>
+          <span class="subtle">donde Heineman vence al mercado</span>
+        </div>
+        <div id="topOppsChart" class="chart-region"></div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <h3>Comparativa por categoría</h3>
+          <span class="subtle">SKUs con ventaja de precio</span>
+        </div>
+        <div id="catCompareChart" class="chart-region"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h3>Detalle · Heineman vs competencia</h3>
+        <span id="pricingRowCount" class="subtle">— filas</span>
+      </div>
+      <div class="table-wrap">
+        <table id="pricingTable">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Marca</th>
+              <th>Tamaño</th>
+              <th>Categoría</th>
+              <th class="num">Heineman Net</th>
+              <th>Competidor</th>
+              <th class="num">Precio comp.</th>
+              <th class="num">Δ €</th>
+              <th class="num">Δ %</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="pricingBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PIPELINE ========== -->
+  <section class="view" id="view-pipeline">
+    <div class="page-head">
+      <div>
+        <h1>Pipeline en vivo</h1>
+        <p class="subtle">696 prospects · 68 países · sincronizado hace 2 min</p>
+      </div>
+      <div class="filters">
+        <select id="regionFilter">
+          <option value="">Todas las regiones</option>
+          <option>Africa</option><option>Middle East</option><option>LATAM</option>
+          <option>Asia</option><option>Eurasia/CIS/Eastern Europe</option>
+        </select>
+        <select id="stageFilter">
+          <option value="">Todos los stages</option>
+          <option>New</option><option>Researching</option><option>Contacted</option>
+          <option>Engaged</option><option>Negotiating</option><option>Won</option>
+        </select>
+        <select id="countryFilter">
+          <option value="">Todos los países</option>
+        </select>
+        <button class="btn-ghost" id="clearFilters">Limpiar</button>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Total prospects</div><div class="kpi-value">696</div><div class="kpi-delta delta-up">+87 esta semana</div></div>
+      <div class="kpi"><div class="kpi-label">Hot leads · score ≥ 80</div><div class="kpi-value">189</div><div class="kpi-delta delta-up">+24 esta semana</div></div>
+      <div class="kpi"><div class="kpi-label">En negociación</div><div class="kpi-value">22</div><div class="kpi-delta delta-up">+5 esta semana</div></div>
+      <div class="kpi"><div class="kpi-label">Cerrados (Won)</div><div class="kpi-value">21</div><div class="kpi-delta delta-flat">USD 412k pipeline</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><h3>Distribución por región</h3><span class="subtle">696 prospects activos</span></div>
+        <div id="regionChart" class="chart-region"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Funnel de stages</h3><span class="subtle">conversión 3.0%</span></div>
+        <div id="funnelChart" class="chart-funnel"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h3>Prospects priorizados</h3>
+        <div class="card-actions">
+          <span id="rowCount" class="subtle">696 filas</span>
+          <button class="btn-ghost-sm">Aprobar outreach</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="prospectsTable">
+          <thead>
+            <tr>
+              <th><input type="checkbox" id="selectAll"></th>
+              <th>Empresa</th>
+              <th>País</th>
+              <th>Tipo</th>
+              <th>Score</th>
+              <th>Stage</th>
+              <th>Brands</th>
+              <th>Contacto</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="pager">
+        <button class="btn-ghost-sm" id="prevPage">← Anterior</button>
+        <span id="pageInfo" class="subtle">Página 1 de 14</span>
+        <button class="btn-ghost-sm" id="nextPage">Siguiente →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MATCHES ========== -->
+  <section class="view" id="view-matches">
+    <div class="page-head">
+      <div><h1>Matches calientes</h1><p class="subtle">Productos Heineman ↔ wishlists/stocks de prospects</p></div>
+      <div class="filters">
+        <select id="matchTypeFilter">
+          <option value="">Todos los tipos</option>
+          <option value="UPC_EXACT">UPC exacto</option>
+          <option value="BRAND_PRODUCT_FUZZY">Brand+Product fuzzy</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Coincidencias totales</div><div class="kpi-value">1.208</div><div class="kpi-delta delta-flat">7 prospects analizados</div></div>
+      <div class="kpi"><div class="kpi-label">UPC exactos</div><div class="kpi-value">494</div><div class="kpi-delta delta-up">arbitraje directo</div></div>
+      <div class="kpi"><div class="kpi-label">Top prospect</div><div class="kpi-value">J Trade</div><div class="kpi-delta delta-flat">560 matches</div></div>
+      <div class="kpi"><div class="kpi-label">Productos Heineman</div><div class="kpi-value">4.151</div><div class="kpi-delta delta-flat">SKUs activos</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card"><div class="card-head"><h3>Matches por prospect</h3></div><div id="prospectMatchesChart" class="chart-region"></div></div>
+      <div class="card"><div class="card-head"><h3>Top categorías con match</h3></div><div id="categoryChart" class="chart-region"></div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Coincidencias detalladas</h3><span class="subtle">mostrando primeras 120 de 1.208</span></div>
+      <div class="table-wrap">
+        <table id="matchesTable">
+          <thead>
+            <tr>
+              <th>Prospect</th><th>Lista</th><th>Producto pedido</th><th>Marca</th><th>UPC</th>
+              <th>Producto Heineman</th><th>Categoría</th><th>Tipo match</th><th>Score</th>
+            </tr>
+          </thead>
+          <tbody id="matchesBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MAP ========== -->
+  <section class="view" id="view-map">
+    <div class="page-head">
+      <div><h1>Mapa global de prospects</h1><p class="subtle">696 empresas · 68 países · zoom para ver más contactos · click para filtrar</p></div>
+      <div class="filters">
+        <span class="subtle" id="mapFilterLabel">Sin filtro</span>
+        <button class="btn-ghost-sm" id="mapClearFilter" style="display:none">Quitar filtro</button>
+      </div>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Africa</div><div class="kpi-value">197</div></div>
+      <div class="kpi"><div class="kpi-label">LATAM</div><div class="kpi-value">178</div></div>
+      <div class="kpi"><div class="kpi-label">Asia</div><div class="kpi-value">132</div></div>
+      <div class="kpi"><div class="kpi-label">Middle East</div><div class="kpi-value">94</div></div>
+      <div class="kpi"><div class="kpi-label">Eurasia/CIS</div><div class="kpi-value">85</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card" style="grid-column: span 2;">
+        <div class="card-head">
+          <h3>Mapa interactivo · drill-down por zoom</h3>
+          <div class="legend">
+            <span><i class="dot-legend dot-africa"></i> Africa</span>
+            <span><i class="dot-legend dot-mena"></i> Middle East</span>
+            <span><i class="dot-legend dot-latam"></i> LATAM</span>
+            <span><i class="dot-legend dot-asia"></i> Asia</span>
+            <span><i class="dot-legend dot-cis"></i> Eurasia/CIS</span>
+            <span class="subtle" style="margin-left:auto">Zoom: <span id="mapZoom">2</span></span>
+          </div>
+        </div>
+        <div id="map"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Prospects en zona seleccionada</h3><span id="mapSelCount" class="subtle">— prospects</span></div>
+      <div class="table-wrap"><table id="mapSelTable">
+        <thead><tr><th>Empresa</th><th>País</th><th>Score</th><th>Web</th><th>LinkedIn</th><th>Email</th></tr></thead>
+        <tbody id="mapSelBody"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ========== HEALTH ========== -->
+  <section class="view" id="view-health">
+    <div class="page-head"><div><h1>Health del sistema</h1><p class="subtle">Workflows n8n · costos LLM · errores · uptime</p></div></div>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Workflows activos</div><div class="kpi-value">10/10</div><div class="kpi-delta delta-up">100% uptime · 7d</div></div>
+      <div class="kpi"><div class="kpi-label">Ejecuciones (24h)</div><div class="kpi-value">847</div><div class="kpi-delta delta-flat">3 con error</div></div>
+      <div class="kpi"><div class="kpi-label">Costo LLM (mes)</div><div class="kpi-value">$ 312</div><div class="kpi-delta delta-up">-12% vs mes anterior</div></div>
+      <div class="kpi"><div class="kpi-label">Apify créditos</div><div class="kpi-value">68%</div><div class="kpi-delta delta-flat">de cuota mensual</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card"><div class="card-head"><h3>Workflows n8n</h3></div><div class="wf-list" id="wfList"></div></div>
+      <div class="card"><div class="card-head"><h3>Distribución de costo por modelo (mes)</h3></div><div id="costChart" class="chart-region"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Log de ejecuciones recientes</h3></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Workflow</th><th>Inicio</th><th>Duración</th><th>Modelo</th><th>Estado</th><th>Output</th></tr></thead>
+        <tbody id="logsBody"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ========== LISTAS NOW ========== -->
+  <section class="view" id="view-listas">
+    <div class="page-head">
+      <div><h1>Listas NOW</h1><p class="subtle">Stocklists / wishlists / ofertas activas recibidas de prospects</p></div>
+      <div class="filters">
+        <input type="text" id="listasSearch" placeholder="Filtrar por empresa..." style="background:var(--bg-1); border:1px solid var(--border); color:var(--text-1); padding:6px 10px; border-radius:6px; font-size:12px;">
+      </div>
+    </div>
+    <div class="kpi-grid" id="listasKpis"></div>
+    <div class="grid-2" id="listasGrid"></div>
+    <div class="card">
+      <div class="card-head"><h3>Detalle de items por lista</h3><span id="listasSelLabel" class="subtle">Selecciona una lista</span></div>
+      <div class="table-wrap"><table id="listasTable">
+        <thead><tr><th>Producto</th><th class="num">Precio (€)</th><th>Archivo origen</th></tr></thead>
+        <tbody id="listasBody"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ========== LEADS DASHBOARD ========== -->
+  <section class="view" id="view-leads">
+    <div class="page-head">
+      <div><h1>Leads Dashboard</h1><p class="subtle">Reporte unificado · ALL_Leads_Unified_v2 · contactos consolidados de todas las fuentes</p></div>
+      <div class="filters">
+        <select id="leadsCountryFilter"><option value="">Todos los países</option></select>
+        <select id="leadsTypeFilter"><option value="">Todos los tipos</option></select>
+        <input type="text" id="leadsSearch" placeholder="Buscar empresa..." style="background:var(--bg-1); border:1px solid var(--border); color:var(--text-1); padding:6px 10px; border-radius:6px; font-size:12px;">
+      </div>
+    </div>
+    <div class="kpi-grid" id="leadsKpis"></div>
+    <div class="grid-2">
+      <div class="card"><div class="card-head"><h3>Top 10 países</h3></div><div id="leadsCountryChart" class="chart-region"></div></div>
+      <div class="card"><div class="card-head"><h3>Por tipo de empresa</h3></div><div id="leadsTypeChart" class="chart-region"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Reporte completo</h3><span id="leadsRowCount" class="subtle">— filas</span></div>
+      <div class="table-wrap"><table id="leadsTable">
+        <thead><tr>
+          <th>Empresa</th><th>País</th><th>Región</th><th>Tipo</th><th>Categoría</th><th>Web</th>
+        </tr></thead>
+        <tbody id="leadsBody"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ========== OFERTAS REALIZADAS ========== -->
+  <section class="view" id="view-ofertas">
+    <div class="page-head">
+      <div><h1>Ofertas realizadas</h1><p class="subtle">Catálogos y ofertas que enviamos / recibimos como referencia</p></div>
+    </div>
+    <div class="kpi-grid" id="ofertasKpis"></div>
+    <div class="card">
+      <div class="card-head"><h3>Listado de ofertas</h3></div>
+      <div class="table-wrap"><table id="ofertasTable">
+        <thead><tr>
+          <th>ID</th><th>Fecha</th><th>Origen</th><th>Destinatario</th>
+          <th class="num">Productos</th><th class="num">Con precio</th>
+          <th class="num">Valor total (€)</th><th>Categorías</th><th>Archivo</th>
+        </tr></thead>
+        <tbody id="ofertasBody"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ========== CATALOG · ahora con datos reales ========== -->
+  <section class="view" id="view-catalog">
+    <div class="page-head">
+      <div><h1>Catálogo Heineman</h1><p class="subtle">4.151 productos · UPC, EAN13, ABV, origen, Net Price</p></div>
+      <div class="filters">
+        <input type="text" id="catSearch" placeholder="Buscar marca o producto..." style="background:var(--bg-1); border:1px solid var(--border); color:var(--text-1); padding:6px 10px; border-radius:6px; font-size:12px;">
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>SKUs · top por precio</h3><span id="catRowCount" class="subtle">— filas</span></div>
+      <div class="table-wrap"><table id="catTable">
+        <thead><tr>
+          <th>Marca</th><th>Producto</th><th>Tamaño</th><th>Categoría</th>
+          <th>Origen</th><th class="num">Net Price (€)</th><th class="num">RSP (€)</th>
+        </tr></thead>
+        <tbody id="catBody"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ========== AGENTES ========== -->
+  <section class="view" id="view-agents">
+    <div class="page-head">
+      <div>
+        <h1>Agentes en tiempo real</h1>
+        <p class="subtle">Estado de los agentes de IA, automatizaciones y conectores activos del stack BAST</p>
+      </div>
+      <div class="filters">
+        <span class="live-pulse"><i class="pulse-dot"></i> Live</span>
+        <span class="subtle" id="agentsLastSync">Actualizado hace segundos</span>
+      </div>
+    </div>
+
+    <div class="kpi-grid" id="agentsKpis"></div>
+
+    <div class="grid-2">
+      <div class="card" style="grid-column: span 2;">
+        <div class="card-head"><h3>Stack de agentes</h3><span class="subtle">click en cada agente para abrir su consola</span></div>
+        <div class="agent-grid" id="agentGrid"></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><h3>Actividad reciente</h3><span class="subtle">últimas 24h · todos los agentes</span></div>
+        <div class="activity-feed" id="agentActivity"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Tareas en cola</h3><span class="subtle">próximas ejecuciones programadas</span></div>
+        <div class="task-queue" id="agentQueue"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Workflows orquestados</h3><span class="subtle">end-to-end · multi-agente</span></div>
+      <div class="table-wrap"><table id="orchestratedTable">
+        <thead><tr>
+          <th>Workflow</th><th>Agentes involucrados</th><th>Última corrida</th>
+          <th class="num">Ejecuciones (24h)</th><th class="num">Éxito</th><th>Estado</th><th></th>
+        </tr></thead>
+        <tbody id="orchestratedBody"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-contacts"><div class="page-head"><div><h1>Contactos</h1><p class="subtle">2.783 contactos centralizados · 516 con email · 68 países</p></div></div><div class="card empty-state"><div class="empty-icon">👥</div><h3>Base maestra unificada</h3><p>Sincronizada con HubSpot. Deduplicada desde 10+ fuentes (Zoho, ASD, Wholesale Trade).</p><button class="btn-primary">Abrir CRM</button></div></section>
+
+  <section class="view" id="view-workflows"><div class="page-head"><div><h1>Workflows n8n</h1><p class="subtle">10 automatizaciones activas</p></div></div><div class="card empty-state"><div class="empty-icon">⚡</div><h3>Editor visual n8n</h3><p>Acceso directo al editor n8n self-hosted. SSH a Hetzner VPS, puerto 5678.</p><button class="btn-primary">Abrir n8n</button></div></section>
+
+  <!-- ========== DETAIL INTELLIGENCE · v5 (Excel-grade row detail) ========== -->
+  <section class="view" id="view-detail">
+    <div class="page-head">
+      <div>
+        <h1>Detail Intelligence</h1>
+        <p class="subtle">Cada fila consolida 6 fuentes · catálogo, ofertas, sales, wholesale 1/2, trader, MSRP · todo linkeable al origen</p>
+      </div>
+      <div class="filters">
+        <select id="detailParam">
+          <option value="best_margin">Parámetro: mayor margen</option>
+          <option value="cheapest">Cost más bajo (Heineman)</option>
+          <option value="highest_msrp">MSRP más alto</option>
+          <option value="recent_offer">Oferta más reciente</option>
+          <option value="recent_sale">Sale más reciente</option>
+          <option value="highest_qty">Mayor cantidad vendida</option>
+        </select>
+        <select id="detailCategory">
+          <option value="">Todas las categorías</option>
+        </select>
+        <button class="btn-ghost" id="detailExport">Exportar CSV</button>
+      </div>
+    </div>
+
+    <!-- KPIs hero estilo Pipedrive · gradientes vibrantes -->
+    <div class="hero-kpi-grid">
+      <div class="hero-kpi g-violet">
+        <div class="hk-label">SKUs activos</div>
+        <div class="hk-value" id="hkItems">—</div>
+        <div class="hk-foot">catálogo Heineman</div>
+      </div>
+      <div class="hero-kpi g-blue">
+        <div class="hk-label">Con price discovery</div>
+        <div class="hk-value" id="hkWs1">—</div>
+        <div class="hk-foot" id="hkWs1Pct">—</div>
+      </div>
+      <div class="hero-kpi g-cyan">
+        <div class="hk-label">Con MSRP comparado</div>
+        <div class="hk-value" id="hkMsrp">—</div>
+        <div class="hk-foot" id="hkMsrpPct">—</div>
+      </div>
+      <div class="hero-kpi g-green">
+        <div class="hk-label">Sales en pipeline</div>
+        <div class="hk-value" id="hkSale">—</div>
+        <div class="hk-foot" id="hkSaleValue">—</div>
+      </div>
+      <div class="hero-kpi g-pink">
+        <div class="hk-label">Margen promedio</div>
+        <div class="hk-value" id="hkMargin">—</div>
+        <div class="hk-foot">vs precio más bajo del mercado</div>
+      </div>
+      <div class="hero-kpi g-amber">
+        <div class="hk-label">Oportunidad total</div>
+        <div class="hk-value" id="hkOpp">—</div>
+        <div class="hk-foot">margen acumulable</div>
+      </div>
+    </div>
+
+    <!-- Funnel + Top categorías -->
+    <div class="detail-secondary">
+      <div class="card funnel-card">
+        <div class="section-head"><h3>Pipeline funnel · desde catálogo a venta</h3></div>
+        <div id="detailFunnel" class="funnel-list"></div>
+      </div>
+      <div class="card">
+        <div class="section-head"><h3>Top categorías</h3></div>
+        <div id="detailCategories" class="cat-bars"></div>
+      </div>
+    </div>
+
+    <!-- Tabla detalle · Excel-grade con heatmap por columna -->
+    <div class="card detail-table-card">
+      <div class="section-head">
+        <h3>Detail rows · todas las fuentes consolidadas</h3>
+        <span class="subtle" id="detailRowCount">—</span>
+      </div>
+      <div class="detail-table-wrap">
+        <table class="detail-table">
+          <thead>
+            <tr class="th-group">
+              <th colspan="4" class="grp-item">Item</th>
+              <th colspan="3" class="grp-offer">Offers we have</th>
+              <th colspan="4" class="grp-sale">Sales / Need list</th>
+              <th colspan="2" class="grp-ws1">Wholesale 1</th>
+              <th colspan="2" class="grp-ws2">Wholesale 2</th>
+              <th class="grp-trader">Trader</th>
+              <th colspan="2" class="grp-msrp">MSRP (Amazon, retail)</th>
+              <th>Margen</th>
+            </tr>
+            <tr>
+              <th>Barcode</th><th>Name</th><th>Brand</th><th>Cat</th>
+              <th>SKU</th><th>Cost</th><th>Date</th>
+              <th>Order ID</th><th>Price</th><th>Date</th><th>Qty</th>
+              <th>Price</th><th>Company</th>
+              <th>Price</th><th>Company</th>
+              <th>Price</th>
+              <th>MSRP</th><th>MSRP 2</th>
+              <th>%</th>
+            </tr>
+          </thead>
+          <tbody id="detailTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MARKET INTELLIGENCE ========== -->
+  <section class="view" id="view-intel">
+    <div class="page-head">
+      <div>
+        <h1>Market Intelligence</h1>
+        <p class="subtle">Noticias del sector liquor, spirits, perfumes y travel retail · fuentes verificadas</p>
+      </div>
+      <div class="filters">
+        <select id="intelCategoryFilter">
+          <option value="all">Todas las categorías</option>
+          <option value="M&A">M&amp;A</option>
+          <option value="Travel Retail">Travel Retail</option>
+          <option value="Tendencia">Tendencias</option>
+          <option value="Mercado">Mercado</option>
+          <option value="Inversión">Inversión</option>
+          <option value="Regulación">Regulación</option>
+          <option value="Retail">Retail</option>
+        </select>
+        <button class="btn-ghost" id="intelRefresh">Actualizar feed</button>
+      </div>
+    </div>
+
+    <div class="kpi-grid" id="intelKpis"></div>
+
+    <div class="intel-grid">
+      <div class="intel-col-main">
+        <div class="section-head">
+          <h2>Feed de noticias</h2>
+          <span class="subtle" id="intelNewsCount">—</span>
+        </div>
+        <div id="intelNewsFeed" class="news-feed"></div>
+      </div>
+      <div class="intel-col-side">
+        <div class="card">
+          <div class="section-head"><h3>Categorías en tendencia</h3></div>
+          <div id="intelTrending" class="trending-list"></div>
+        </div>
+        <div class="card">
+          <div class="section-head"><h3>Alertas accionables</h3></div>
+          <div id="intelAlerts" class="alerts-list"></div>
+        </div>
+        <div class="card">
+          <div class="section-head"><h3>Fuentes monitoreadas</h3></div>
+          <div id="intelSources" class="sources-list"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Modal de detalle de prospect -->
+<div id="prospectModal" class="modal-overlay" style="display:none">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalTitle">—</h2>
+      <button class="btn-ghost" id="modalClose">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- Quick Quote Modal -->
+<div id="quoteModal" class="modal-overlay" style="display:none">
+  <div class="modal modal-quote">
+    <div class="modal-head">
+      <h2>Quick Quote · cotización en 30s</h2>
+      <button class="btn-ghost" id="quoteClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="quote-step">
+        <label class="quote-label">1 · Producto del catálogo</label>
+        <div class="quote-search-wrap">
+          <input type="text" id="quoteSearch" placeholder="Buscar por marca, producto o tamaño · 4.151 SKUs" autocomplete="off">
+          <div id="quoteResults" class="quote-results"></div>
+        </div>
+        <div id="quoteSelected" class="quote-selected" style="display:none"></div>
+      </div>
+
+      <div class="quote-step">
+        <label class="quote-label">2 · Markup sobre Net Price</label>
+        <div class="markup-options">
+          <button class="chip-btn" data-markup="10">10%</button>
+          <button class="chip-btn active" data-markup="15">15%</button>
+          <button class="chip-btn" data-markup="20">20%</button>
+          <button class="chip-btn" data-markup="25">25%</button>
+          <input type="number" id="customMarkup" placeholder="% custom" min="0" max="200">
+        </div>
+      </div>
+
+      <div class="quote-step">
+        <label class="quote-label">3 · Cliente</label>
+        <select id="quoteClient">
+          <option value="">Seleccionar prospect o lead…</option>
+        </select>
+      </div>
+
+      <div class="quote-step">
+        <label class="quote-label">4 · Cantidad</label>
+        <input type="number" id="quoteQty" placeholder="Cantidad de cajas" value="100" min="1">
+      </div>
+
+      <div id="quoteSummary" class="quote-summary" style="display:none"></div>
+
+      <div class="quote-actions">
+        <button class="btn-ghost" id="quoteCopyEmail">Copiar email</button>
+        <button class="btn-ghost" id="quoteSlack">Enviar a Slack</button>
+        <button class="btn-ghost" id="quoteHubspot">Push a HubSpot</button>
+        <button class="btn-primary" id="quoteSave">Guardar oferta</button>
+      </div>
+      <div id="quoteToast" class="quote-toast" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Market Search Modal (palette) -->
+<div id="searchModal" class="modal-overlay search-overlay" style="display:none">
+  <div class="modal modal-search">
+    <div class="search-input-wrap">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Buscar en catálogo, prospects, leads, ofertas, listas…" autocomplete="off">
+      <kbd>ESC</kbd>
+    </div>
+    <div id="searchResults" class="search-results">
+      <div class="search-empty">Empezá a escribir para buscar en todo el workspace…</div>
+    </div>
+    <div class="search-hints">
+      <span><kbd>↑</kbd><kbd>↓</kbd> navegar</span>
+      <span><kbd>↵</kbd> abrir</span>
+      <span><kbd>ESC</kbd> cerrar</span>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="data_v2.js"></script>
+<script src="agents_data.js"></script>
+<script src="intel_data.js"></script>
+<script src="detail_data.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin></script>
+<script src="app.js"></script>
+</body>
+</html>
