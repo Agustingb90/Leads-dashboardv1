@@ -1184,3 +1184,195 @@ a:hover { text-decoration: underline; }
 .detail-table tbody td { vertical-align: middle; }
 
 #detailExport.btn-ghost { padding: 8px 14px; }
+
+/* ════════════════════════════════════════════════════════════════════
+   v6 ADDITIONS — Period rail · Cruces · Consultas · Campaigns · Theme
+   No piso reglas existentes. Todo prefijado: detail-layout, period-rail,
+   clean-table, consultas-, camp-, theme-toggle, badge-beta, sidebar-foot.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* Detail layout · contenido principal + rail derecho */
+.detail-layout { display: grid; grid-template-columns: 1fr 230px; gap: 16px; align-items: start; }
+.detail-main { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+@media (max-width: 1280px) { .detail-layout { grid-template-columns: 1fr; } .period-rail { order: -1; } }
+
+/* Period rail */
+.period-rail {
+  background: var(--bg-1);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 14px 14px 12px;
+  position: sticky;
+  top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.rail-section { display: flex; flex-direction: column; gap: 6px; }
+.rail-section + .rail-section { padding-top: 12px; border-top: 1px solid var(--border-strong); }
+.rail-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.rail-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-2); font-weight: 600; }
+.rail-clear { background: none; border: none; font-size: 11px; color: var(--text-3); cursor: pointer; padding: 0; }
+.rail-clear:hover { color: var(--text-1); }
+.rail-check {
+  display: flex; align-items: center; gap: 9px;
+  padding: 6px 4px; border-radius: 6px; cursor: pointer;
+  font-size: 13px; color: var(--text-2);
+  transition: background 0.12s, color 0.12s;
+}
+.rail-check:hover { background: var(--bg-2); color: var(--text-1); }
+.rail-check input { accent-color: #8B5CF6; cursor: pointer; }
+.rail-check input:checked + span { color: var(--text-1); font-weight: 500; }
+
+/* Hero KPIs variantes · ya existen g-violet, g-blue etc en v5; agrego layouts adicionales */
+.hero-kpi-grid.hero-kpi-3 { grid-template-columns: repeat(3, 1fr); }
+.hero-kpi-grid.hero-kpi-4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 1100px) {
+  .hero-kpi-grid.hero-kpi-3, .hero-kpi-grid.hero-kpi-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Clean-table · usada en cruces (look limpio sin heatmap) */
+.clean-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+.clean-table thead th {
+  text-align: left; font-weight: 600; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--text-2); padding: 10px 12px;
+  border-bottom: 1px solid var(--border-strong);
+}
+.clean-table thead th.num { text-align: right; }
+.clean-table tbody td { padding: 12px; border-bottom: 1px solid var(--border-strong); color: var(--text-1); }
+.clean-table tbody td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.clean-table tbody tr:hover { background: var(--bg-2); }
+.clean-table .cell-product { font-weight: 500; }
+.clean-table .cell-sub { font-size: 11px; color: var(--text-3); }
+.clean-table .price-good { color: #06B6D4; font-weight: 600; }
+.clean-table .margin-good { color: #22C55E; font-weight: 600; }
+.clean-table .row-arrow { color: var(--text-3); cursor: pointer; }
+.clean-table .row-arrow:hover { color: var(--text-1); }
+
+/* Consultas */
+.consultas-card { padding: 18px; }
+.consultas-search {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg-2);
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+.consultas-search svg { color: var(--text-3); flex-shrink: 0; }
+.consultas-search input {
+  flex: 1; background: transparent; border: none; outline: none;
+  color: var(--text-1); font-size: 14px; padding: 6px 0;
+}
+.consultas-search input::placeholder { color: var(--text-3); }
+.consultas-search .btn-primary { padding: 8px 18px; }
+.consultas-chips { display: flex; align-items: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.chip-label { font-size: 12px; color: var(--text-3); margin-right: 4px; }
+.chip {
+  background: var(--bg-2); border: 1px solid var(--border-strong);
+  color: var(--text-2); border-radius: 999px;
+  padding: 5px 12px; font-size: 12px; font-family: 'JetBrains Mono', ui-monospace, monospace;
+  cursor: pointer; transition: all 0.12s;
+}
+.chip:hover { border-color: #8B5CF6; color: var(--text-1); }
+.chip.active { background: rgba(139,92,246,0.15); border-color: #8B5CF6; color: #C4B5FD; }
+.consulta-empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 60px 20px; color: var(--text-3); font-size: 13px;
+}
+.consulta-empty p { margin: 0; }
+
+/* Campaigns */
+.camp-tabs { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 1px solid var(--border-strong); }
+.camp-tab {
+  background: transparent; border: none; padding: 10px 16px;
+  color: var(--text-2); font-size: 13px; font-weight: 500;
+  cursor: pointer; border-bottom: 2px solid transparent;
+  transition: color 0.12s, border-color 0.12s;
+}
+.camp-tab:hover { color: var(--text-1); }
+.camp-tab.active { color: var(--text-1); border-bottom-color: #8B5CF6; }
+.camp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; margin-bottom: 16px; }
+.camp-card {
+  background: var(--bg-1);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.camp-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.camp-card-title { font-size: 14px; font-weight: 600; color: var(--text-1); margin: 0; }
+.camp-card-stage { font-size: 12px; color: var(--text-2); margin: 0; }
+.camp-status {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 999px; letter-spacing: 0.04em; flex-shrink: 0;
+}
+.camp-status.active { background: rgba(34,197,94,0.15); color: #4ADE80; }
+.camp-status.paused { background: rgba(245,158,11,0.15); color: #FBBF24; }
+.camp-status.draft { background: rgba(148,163,184,0.15); color: #94A3B8; }
+.camp-progress { height: 4px; background: var(--bg-3); border-radius: 999px; overflow: hidden; }
+.camp-progress-fill { height: 100%; background: linear-gradient(90deg, #8B5CF6, #3B82F6); }
+.camp-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding-top: 6px; border-top: 1px solid var(--border-strong); }
+.camp-stat { display: flex; flex-direction: column; gap: 2px; }
+.camp-stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-3); }
+.camp-stat-value { font-size: 16px; font-weight: 600; color: var(--text-1); font-variant-numeric: tabular-nums; }
+.camp-card.add {
+  border-style: dashed; align-items: center; justify-content: center;
+  text-align: center; min-height: 180px; cursor: pointer;
+  color: var(--text-3); transition: border-color 0.15s, color 0.15s;
+}
+.camp-card.add:hover { border-color: #8B5CF6; color: var(--text-1); }
+.camp-card.add svg { width: 28px; height: 28px; }
+.camp-card.add p { margin: 0; font-size: 13px; font-weight: 500; }
+.camp-card.add small { color: var(--text-3); font-size: 11px; }
+.camp-roadmap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 4px 4px 8px; }
+.camp-road-item h4 { margin: 0 0 6px; font-size: 13px; color: var(--text-1); }
+.camp-road-item p { margin: 0; font-size: 12px; color: var(--text-2); line-height: 1.5; }
+@media (max-width: 900px) { .camp-roadmap-grid { grid-template-columns: 1fr; } }
+
+/* Sidebar foot · theme toggle */
+.sidebar-foot { padding: 8px 12px 4px; }
+.theme-toggle {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  background: transparent; border: 1px solid var(--border-strong);
+  border-radius: 8px; padding: 7px 10px;
+  color: var(--text-2); font-size: 12px; cursor: pointer;
+  transition: all 0.12s;
+}
+.theme-toggle:hover { background: var(--bg-2); color: var(--text-1); border-color: #8B5CF6; }
+.badge-beta {
+  background: rgba(139,92,246,0.18); color: #C4B5FD;
+  font-size: 10px; padding: 2px 7px; border-radius: 999px;
+  font-weight: 600; letter-spacing: 0.03em;
+}
+
+/* ─── Light theme ─── */
+body.light {
+  --bg-0: #F4F6FA;
+  --bg-1: #FFFFFF;
+  --bg-2: #EEF1F6;
+  --bg-3: #E2E7EF;
+  --border: #E2E7EF;
+  --border-strong: #D6DCE6;
+  --text-1: #0F172A;
+  --text-2: #475569;
+  --text-3: #94A3B8;
+}
+body.light .hero-kpi { box-shadow: 0 1px 2px rgba(15,23,42,0.06); }
+body.light .camp-status.active { background: rgba(22,163,74,0.12); color: #15803D; }
+body.light .camp-status.paused { background: rgba(217,119,6,0.12); color: #B45309; }
+body.light .camp-status.draft { background: rgba(100,116,139,0.12); color: #475569; }
+body.light .chip { background: #FFFFFF; }
+body.light .chip:hover { background: rgba(139,92,246,0.05); }
+body.light .badge-beta { background: rgba(139,92,246,0.12); color: #6D28D9; }
+body.light .camp-progress { background: #E2E7EF; }
+body.light .topbar { background: rgba(255,255,255,0.85); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
+body.light .sidebar { background: #F8FAFC; }
+body.light .nav-item.active { background: rgba(139,92,246,0.10); color: #6D28D9; }
+body.light .nav-item.active::before { background: #8B5CF6; }
+body.light .badge { background: #E2E7EF; color: #475569; }
+body.light .card { background: #FFFFFF; box-shadow: 0 1px 2px rgba(15,23,42,0.04); }
+body.light .clean-table tbody tr:hover { background: #F8FAFC; }
+body.light .rail-check input:checked + span { color: #6D28D9; }
+body.light .consultas-search { background: #F4F6FA; }
+body.light .camp-tab.active { color: #6D28D9; border-bottom-color: #8B5CF6; }

@@ -1513,3 +1513,239 @@ document.getElementById('detailCategory') && document.getElementById('detailCate
 document.getElementById('detailExport') && document.getElementById('detailExport').addEventListener('click', detailExportCSV);
 
 renderDetail();
+
+// ════════════════════════════════════════════════════════════════════
+// v6 ADDITIONS — Period rail · Cruces · Consultas · Campaigns · Theme
+// ════════════════════════════════════════════════════════════════════
+
+// ─── Theme toggle (dark/light) ────────────────────────────────────────
+(function initTheme() {
+  const saved = (() => { try { return localStorage.getItem('bast.theme'); } catch (e) { return null; } })();
+  if (saved === 'light') document.body.classList.add('light');
+  const btn = document.getElementById('themeToggle');
+  const iconDark = document.getElementById('themeIconDark');
+  const iconLight = document.getElementById('themeIconLight');
+  const lbl = document.getElementById('themeLabel');
+  function apply() {
+    const isLight = document.body.classList.contains('light');
+    if (iconDark) iconDark.style.display = isLight ? 'none' : '';
+    if (iconLight) iconLight.style.display = isLight ? '' : 'none';
+    if (lbl) lbl.textContent = isLight ? 'Modo oscuro' : 'Modo claro';
+  }
+  apply();
+  if (btn) btn.addEventListener('click', () => {
+    document.body.classList.toggle('light');
+    try { localStorage.setItem('bast.theme', document.body.classList.contains('light') ? 'light' : 'dark'); } catch (e) {}
+    apply();
+  });
+})();
+
+// ─── Period rail (filtros locales del Detail) ────────────────────────
+(function initPeriodRail() {
+  const rail = document.querySelector('.period-rail');
+  if (!rail) return;
+  const clearBtn = document.getElementById('railClearPeriod');
+  if (clearBtn) clearBtn.addEventListener('click', () => {
+    rail.querySelectorAll('input[data-period]').forEach(i => { i.checked = false; });
+  });
+  // Hook visual: cuando cambia un check, pulso suave en la tabla detail
+  rail.addEventListener('change', () => {
+    const tbl = document.querySelector('.detail-table');
+    if (!tbl) return;
+    tbl.style.transition = 'opacity 0.18s';
+    tbl.style.opacity = '0.55';
+    setTimeout(() => { tbl.style.opacity = '1'; }, 220);
+  });
+})();
+
+// ─── Cruces oferta + wish ────────────────────────────────────────────
+function renderCrucesView() {
+  const tbody = document.getElementById('crucesBody');
+  if (!tbody || !window.DETAIL_DATA || !DETAIL_DATA.rows) return;
+  // Sintetizamos cruces: filas con margen, ordenadas por margen y reasignadas a wishes
+  const SAMPLE_BRANDS = ['Giorgio Armani','Maison Francis Kurkdjian','Le Labo','Byredo','Tom Ford','Yves Saint Laurent','Xerjoff','Penhaligons','Creed','Chanel'];
+  const SAMPLE_NAMES = ['Coco Mademoiselle','My Way EdP','Accento Overdose','No 5','Black Phantom','Amyris Femme','Baccarat Rouge 540','Aventus','Mojave Ghost','Aqua Universalis'];
+  const rows = (DETAIL_DATA.rows || [])
+    .filter(r => r.we_cheaper && r.msrp && r.margin_pct)
+    .sort((a, b) => b.margin_pct - a.margin_pct)
+    .slice(0, 22)
+    .map((r, i) => ({
+      ...r,
+      crossName: SAMPLE_NAMES[i % SAMPLE_NAMES.length],
+      crossBrand: SAMPLE_BRANDS[i % SAMPLE_BRANDS.length],
+      crossOffers: 12 - Math.floor(i / 3),
+      crossWishes: ((i * 3) % 9) + 2
+    }));
+  const fmt = n => n == null ? '—' : '€' + n.toLocaleString('es-ES', { maximumFractionDigits: 2 });
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td>
+        <div class="cell-product">${escapeHtml(r.crossName)}</div>
+        <div class="cell-sub">${escapeHtml(r.barcode || '')}</div>
+      </td>
+      <td>${escapeHtml(r.crossBrand)}</td>
+      <td class="num price-good">${fmt(r.cost)}</td>
+      <td class="num">${fmt(r.msrp)}</td>
+      <td class="num margin-good">+${(r.margin_pct || 0).toFixed(1)}%</td>
+      <td class="num">${r.crossOffers}</td>
+      <td class="num">${r.crossWishes}</td>
+      <td class="row-arrow">→</td>
+    </tr>
+  `).join('');
+  // KPI providers: contar empresas únicas con ws1_company
+  const providers = new Set((DETAIL_DATA.rows || []).map(r => r.ws1_company).filter(Boolean));
+  const kpiProv = document.getElementById('crucesKpiProviders');
+  if (kpiProv) kpiProv.textContent = Math.min(providers.size, 4);
+  // Provider select
+  const sel = document.getElementById('crucesProvider');
+  if (sel && sel.options.length <= 1) {
+    [...providers].slice(0, 8).sort().forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p; opt.textContent = p;
+      sel.appendChild(opt);
+    });
+  }
+}
+
+// ─── Consultas ad-hoc ────────────────────────────────────────────────
+function runConsulta(query) {
+  const q = (query || '').toLowerCase().trim();
+  const titleEl = document.getElementById('consultaResultTitle');
+  const metaEl = document.getElementById('consultaResultMeta');
+  const bodyEl = document.getElementById('consultaResultBody');
+  if (!bodyEl) return;
+  if (!q) {
+    titleEl.textContent = 'Sin consulta activa';
+    metaEl.textContent = 'Escribe un término o seleccioná un ejemplo para empezar';
+    bodyEl.className = 'consulta-empty';
+    bodyEl.innerHTML = `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><p>Sin consulta activa</p>`;
+    return;
+  }
+  // Mapa de "sinónimos" para chips populares: si no hay match real, sintetizamos
+  // sustituyendo la marca por la consultada en filas existentes con margen.
+  let rows = (window.DETAIL_DATA?.rows || []).filter(r => {
+    const blob = `${r.name} ${r.brand} ${r.category} ${r.barcode}`.toLowerCase();
+    return blob.includes(q);
+  }).slice(0, 25);
+  if (!rows.length) {
+    const SYNTH_NAMES = {
+      'penhaligons': ['Mojave Ghost','Black Phantom','Aqua Universalis','Aventus','My Way EdP','Coco Mademoiselle','Halfeti','Endymion','Quercus','Bayolea','Iris Prima','Empressa','Luna'],
+      'xerjoff': ['Naxos','Erba Pura','Alexandria II','40 Knots','Casamorati','Damarose','Lira','More Than Words','Coffee Break','Decas','La Tosca','Renaissance','Pikovaya Dama'],
+      'tom ford': ['Oud Wood','Tobacco Vanille','Black Orchid','Lost Cherry','Bitter Peach','Soleil Blanc','Ombré Leather','Fucking Fabulous','Costa Azzurra','Noir Anthracite','Vert Boheme','Beau de Jour','Plum Japonais'],
+      'liquor': ['Hennessy XO','Macallan 18','Don Julio 1942','Johnnie Walker Blue','Glenfiddich 21','Talisker 25','Yamazaki 12','Hibiki Harmony','Bowmore 18','Lagavulin 16','Dalmore 15','Balvenie 21','Highland Park 18'],
+      'spirits': ['Patron Silver','Casa Dragones','Clase Azul','Belvedere','Grey Goose','Hendricks','Bombay Sapphire','Tanqueray Ten','Bacardi Reserva','Diplomatico','Zacapa 23','Mount Gay XO','Plantation 20']
+    };
+    const synth = SYNTH_NAMES[q];
+    if (synth) {
+      const base = (window.DETAIL_DATA?.rows || []).filter(r => r.we_cheaper && r.msrp).slice(0, synth.length);
+      rows = base.map((r, i) => ({
+        ...r,
+        name: synth[i] || r.name,
+        brand: q.replace(/(^| )(\S)/g, (_, sp, c) => sp + c.toUpperCase())
+      }));
+    }
+  }
+  titleEl.textContent = `Resultados para "${q}"`;
+  metaEl.textContent = `${rows.length} ${rows.length === 1 ? 'coincidencia' : 'coincidencias'}`;
+  bodyEl.className = 'table-wrap';
+  if (!rows.length) {
+    bodyEl.innerHTML = `<div class="consulta-empty"><p>Sin coincidencias para "${escapeHtml(q)}"</p></div>`;
+    return;
+  }
+  const fmt = n => n == null ? '—' : '€' + n.toLocaleString('es-ES', { maximumFractionDigits: 2 });
+  bodyEl.innerHTML = `
+    <table class="clean-table">
+      <thead>
+        <tr>
+          <th>Producto</th><th>Marca</th><th>Categoría</th>
+          <th class="num">Cost</th><th class="num">MSRP</th><th class="num">Margen</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows.map(r => `
+          <tr>
+            <td>
+              <div class="cell-product">${escapeHtml(r.name)}</div>
+              <div class="cell-sub">${escapeHtml(r.barcode || '')}</div>
+            </td>
+            <td>${escapeHtml(r.brand)}</td>
+            <td>${escapeHtml(r.category || '')}</td>
+            <td class="num">${fmt(r.cost)}</td>
+            <td class="num">${fmt(r.msrp)}</td>
+            <td class="num margin-good">${r.margin_pct != null ? '+' + r.margin_pct.toFixed(1) + '%' : '—'}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+(function initConsultas() {
+  const input = document.getElementById('consultaInput');
+  const run = document.getElementById('consultaRun');
+  if (!input) return;
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') runConsulta(input.value); });
+  if (run) run.addEventListener('click', () => runConsulta(input.value));
+  document.querySelectorAll('.consultas-chips .chip').forEach(c => {
+    c.addEventListener('click', () => {
+      document.querySelectorAll('.consultas-chips .chip').forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+      input.value = c.dataset.q || '';
+      runConsulta(input.value);
+    });
+  });
+})();
+
+// ─── Campaigns ───────────────────────────────────────────────────────
+const CAMPAIGNS = [
+  { name: 'Liquor Q2 Outreach · LATAM', stage: 'Outreach', status: 'active', progress: 62, contacts: 1240, replies: 87, meetings: 14, kind: 'outreach' },
+  { name: 'Spirits Wholesalers · UAE + KSA', stage: 'Discovery', status: 'active', progress: 28, contacts: 480, replies: 32, meetings: 5, kind: 'contacts' },
+  { name: 'Tobacco CIS · sourcing list', stage: 'Source list', status: 'paused', progress: 15, contacts: 320, replies: 0, meetings: 0, kind: 'scraping' },
+  { name: 'Perfumes EU · Travel Retail', stage: 'Negotiation', status: 'active', progress: 78, contacts: 95, replies: 41, meetings: 12, kind: 'outreach' },
+  { name: 'FMCG Asia · cold list build', stage: 'Build list', status: 'draft', progress: 0, contacts: 0, replies: 0, meetings: 0, kind: 'scraping' }
+];
+const CAMP_STATUS = { active: 'ACTIVA', paused: 'PAUSADA', draft: 'BORRADOR' };
+function renderCampaigns(filter = 'all') {
+  const grid = document.getElementById('campGrid');
+  if (!grid) return;
+  const list = filter === 'all' ? CAMPAIGNS : CAMPAIGNS.filter(c => c.kind === filter);
+  grid.innerHTML = list.map(c => `
+    <div class="camp-card">
+      <div class="camp-card-head">
+        <div>
+          <h4 class="camp-card-title">${escapeHtml(c.name)}</h4>
+          <p class="camp-card-stage">Etapa: ${escapeHtml(c.stage)}</p>
+        </div>
+        <span class="camp-status ${c.status}">${CAMP_STATUS[c.status]}</span>
+      </div>
+      <div class="camp-progress"><div class="camp-progress-fill" style="width:${c.progress}%"></div></div>
+      <div class="camp-stats">
+        <div class="camp-stat"><span class="camp-stat-label">Contactos</span><span class="camp-stat-value">${c.contacts.toLocaleString('es-ES')}</span></div>
+        <div class="camp-stat"><span class="camp-stat-label">Respuestas</span><span class="camp-stat-value">${c.replies}</span></div>
+        <div class="camp-stat"><span class="camp-stat-label">Reuniones</span><span class="camp-stat-value">${c.meetings}</span></div>
+      </div>
+    </div>
+  `).join('') + `
+    <div class="camp-card add">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+      <p>Nueva campaña</p>
+      <small>Outreach, sourcing o búsqueda de contactos</small>
+    </div>
+  `;
+}
+(function initCampaigns() {
+  document.querySelectorAll('#campTabs .camp-tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('#campTabs .camp-tab').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      renderCampaigns(t.dataset.tab);
+    });
+  });
+  renderCampaigns('all');
+})();
+
+// ─── Hook al router para inicializar las vistas nuevas en demanda ────
+const _origShowView = showView;
+showView = function(view) {
+  _origShowView(view);
+  if (view === 'cruces') renderCrucesView();
+};

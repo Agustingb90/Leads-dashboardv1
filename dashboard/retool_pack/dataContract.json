@@ -1,0 +1,391 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "bast.detail-intelligence.v1",
+  "title": "BAST · Detail Intelligence · Data Contract",
+  "description": "Forma exacta del payload que la query maestra debe devolver para alimentar el dashboard. Toda derivación (KPIs, funnel, top categorías) se hace en transformers JS dentro de Retool sobre `rows`. El backend solo necesita devolver `rows` con los 26 campos.",
+  "type": "object",
+  "required": [
+    "rows"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "rows": {
+      "type": "array",
+      "minItems": 0,
+      "description": "Una fila por SKU del catálogo Heineman. Cada fila consolida 6 fuentes: catálogo, ofertas activas, sales/need list, wholesale 1, wholesale 2, trader, MSRP.",
+      "items": {
+        "$ref": "#/$defs/Row"
+      }
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp ISO-8601 en UTC del momento en que se construyó el payload. Usado por el componente `lastSyncBadge` para mostrar 'Última sync: hace Xm'."
+    },
+    "currency": {
+      "type": "string",
+      "default": "EUR",
+      "description": "ISO 4217. Se aplica a todos los campos *_price, cost, msrp, msrp2, margin_eur, total_opportunity_eur, total_sale_value_eur."
+    }
+  },
+  "$defs": {
+    "Row": {
+      "type": "object",
+      "required": [
+        "barcode",
+        "name",
+        "brand",
+        "category",
+        "sku",
+        "cost"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "_meta_group_item": {
+          "type": "null",
+          "description": "Marker · ITEM (catálogo Heineman master)"
+        },
+        "barcode": {
+          "type": "string",
+          "description": "EAN/UPC del SKU. Se usa como ID estable del item. Linkea a la vista #catalog del dashboard.",
+          "x-source": "catalog.barcode",
+          "x-link": "internal:#catalog?barcode={value}"
+        },
+        "name": {
+          "type": "string",
+          "description": "Nombre comercial del producto.",
+          "x-source": "catalog.name",
+          "x-link": "internal:#catalog?barcode={barcode}"
+        },
+        "brand": {
+          "type": "string",
+          "x-source": "catalog.brand"
+        },
+        "category": {
+          "type": "string",
+          "description": "Categoría merchandising (Cognac · Whisk(e)y · SC/Sets · ...).",
+          "x-source": "catalog.category",
+          "x-display": "tag",
+          "x-tag-color": "violet"
+        },
+        "size": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Formato de envase (0.7L, 1.0L, 1.75L, GP).",
+          "x-source": "catalog.size"
+        },
+        "_meta_group_offer": {
+          "type": "null",
+          "description": "Marker · OFFERS WE HAVE (ofertas activas Heineman)"
+        },
+        "sku": {
+          "type": "string",
+          "description": "SKU interno Heineman (HEI-XXXXX).",
+          "x-source": "offers.sku"
+        },
+        "cost": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Costo Heineman EUR. Heatmap inverso: costo bajo = más caliente (mejor margen).",
+          "x-source": "offers.cost",
+          "x-format": "currency",
+          "x-heatmap": {
+            "palette": "green",
+            "invert": true,
+            "rank_field": "heat_cost"
+          }
+        },
+        "offer_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date",
+          "x-source": "offers.last_seen_at",
+          "x-link": "internal:#ofertas?offer_id={offer_id}"
+        },
+        "offer_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "x-source": "offers.id"
+        },
+        "_meta_group_sale": {
+          "type": "null",
+          "description": "Marker · SALES / NEED LIST (operaciones cerradas o solicitadas)"
+        },
+        "order_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "ID del pedido en HubSpot Deal o en el sistema de ventas. Linkea a #leads.",
+          "x-source": "sales.order_id",
+          "x-link": "internal:#leads?order_id={order_id}"
+        },
+        "sale_price": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Precio efectivo de venta o solicitud. Heatmap directo: alto = caliente.",
+          "x-source": "sales.unit_price",
+          "x-format": "currency",
+          "x-heatmap": {
+            "palette": "green",
+            "invert": false,
+            "rank_field": "heat_sale_price"
+          }
+        },
+        "sale_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date",
+          "x-source": "sales.closed_at"
+        },
+        "sale_qty": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "x-source": "sales.qty",
+          "x-format": "integer",
+          "x-heatmap": {
+            "palette": "green",
+            "invert": false,
+            "rank_field": "heat_sale_qty"
+          }
+        },
+        "_meta_group_ws1": {
+          "type": "null",
+          "description": "Marker · WHOLESALE 1 (mayorista principal · Listas NOW)"
+        },
+        "ws1_price": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Precio mayorista 1. Heatmap palette azul.",
+          "x-source": "lists_now.price WHERE rank=1",
+          "x-format": "currency",
+          "x-heatmap": {
+            "palette": "blue",
+            "invert": false,
+            "rank_field": "heat_ws1"
+          }
+        },
+        "ws1_company": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Razón social del mayorista 1. Linkea a #listas.",
+          "x-source": "lists_now.company WHERE rank=1",
+          "x-link": "internal:#listas?company={value}"
+        },
+        "_meta_group_ws2": {
+          "type": "null",
+          "description": "Marker · WHOLESALE 2 (mayorista secundario)"
+        },
+        "ws2_price": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "x-source": "lists_now.price WHERE rank=2",
+          "x-format": "currency",
+          "x-heatmap": {
+            "palette": "cyan",
+            "invert": false,
+            "rank_field": "heat_ws2"
+          }
+        },
+        "ws2_company": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "x-source": "lists_now.company WHERE rank=2",
+          "x-link": "internal:#listas?company={value}"
+        },
+        "_meta_group_trader": {
+          "type": "null",
+          "description": "Marker · TRADER (precio promedio de traders independientes)"
+        },
+        "trader_price": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "x-source": "traders.avg_price",
+          "x-format": "currency",
+          "x-heatmap": {
+            "palette": "amber",
+            "invert": false,
+            "rank_field": "heat_trader"
+          }
+        },
+        "_meta_group_msrp": {
+          "type": "null",
+          "description": "Marker · MSRP (precio público de referencia)"
+        },
+        "msrp": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "MSRP fuente primaria (web oficial / Amazon).",
+          "x-source": "msrp.primary",
+          "x-format": "currency",
+          "x-heatmap": {
+            "palette": "pink",
+            "invert": false,
+            "rank_field": "heat_msrp"
+          },
+          "x-link": "external:https://www.amazon.com/s?k={brand}+{name}"
+        },
+        "msrp2": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "MSRP fuente secundaria (retailer alternativo).",
+          "x-source": "msrp.secondary",
+          "x-format": "currency",
+          "x-heatmap": {
+            "palette": "pink",
+            "invert": false,
+            "rank_field": "heat_msrp2"
+          }
+        },
+        "_meta_group_derived": {
+          "type": "null",
+          "description": "Marker · DERIVED (calculado en backend o transformer)"
+        },
+        "min_market": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "min(ws1_price, ws2_price, trader_price, msrp, msrp2) ignorando nulls.",
+          "x-source": "derived"
+        },
+        "max_market": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "max(ws1_price, ws2_price, trader_price, msrp, msrp2) ignorando nulls.",
+          "x-source": "derived"
+        },
+        "we_cheaper": {
+          "type": "boolean",
+          "description": "True si cost < min_market. Trigger del badge verde 'Donde somos más baratos'.",
+          "x-source": "derived"
+        },
+        "margin_pct": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "(min_market - cost) / min_market * 100. Heatmap palette violeta.",
+          "x-source": "derived",
+          "x-format": "percent",
+          "x-decimals": 1,
+          "x-heatmap": {
+            "palette": "margin",
+            "invert": false,
+            "rank_field": "heat_margin"
+          }
+        },
+        "margin_eur": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "(min_market - cost) en EUR.",
+          "x-source": "derived",
+          "x-format": "currency"
+        }
+      }
+    }
+  },
+  "x-derivedKpis": {
+    "description": "KPIs calculados por la query JS `kpiCalc` sobre `detailData.value.rows`. NO los devuelve el backend.",
+    "fields": {
+      "total_items": {
+        "expr": "rows.length"
+      },
+      "with_sale": {
+        "expr": "rows.filter(r => r.order_id).length"
+      },
+      "with_ws1": {
+        "expr": "rows.filter(r => r.ws1_price != null).length"
+      },
+      "with_msrp": {
+        "expr": "rows.filter(r => r.msrp != null).length"
+      },
+      "we_cheaper_count": {
+        "expr": "rows.filter(r => r.we_cheaper).length"
+      },
+      "avg_margin_pct": {
+        "expr": "mean(rows.filter(r => r.margin_pct != null).map(r => r.margin_pct))"
+      },
+      "total_opportunity_eur": {
+        "expr": "sum(rows.filter(r => r.margin_eur != null).map(r => r.margin_eur * (r.sale_qty || 1)))"
+      },
+      "total_sale_value_eur": {
+        "expr": "sum(rows.filter(r => r.sale_price && r.sale_qty).map(r => r.sale_price * r.sale_qty))"
+      }
+    }
+  },
+  "x-funnelStages": [
+    {
+      "key": "items",
+      "label": "Items en catálogo",
+      "expr": "rows.length",
+      "palette": "violet"
+    },
+    {
+      "key": "withOffer",
+      "label": "Con oferta activa",
+      "expr": "rows.filter(r => r.cost != null).length",
+      "palette": "blue"
+    },
+    {
+      "key": "withWs1",
+      "label": "Con price discovery",
+      "expr": "rows.filter(r => r.ws1_price != null).length",
+      "palette": "cyan"
+    },
+    {
+      "key": "withMsrp",
+      "label": "Con MSRP comparado",
+      "expr": "rows.filter(r => r.msrp != null).length",
+      "palette": "pink"
+    },
+    {
+      "key": "withSale",
+      "label": "Con sale en pipeline",
+      "expr": "rows.filter(r => r.order_id).length",
+      "palette": "green"
+    },
+    {
+      "key": "weCheaper",
+      "label": "Donde somos más baratos",
+      "expr": "rows.filter(r => r.we_cheaper).length",
+      "palette": "amber"
+    }
+  ],
+  "x-topCategories": {
+    "description": "Conteo desc por r.category, top 10. Click en una categoría hace setValue del select detailCategory."
+  }
+}

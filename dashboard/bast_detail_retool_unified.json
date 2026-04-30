@@ -1,0 +1,1417 @@
+{
+  "$schema": "bast.detail-intelligence.unified-pack.v1",
+  "kind": "BASTRetoolUnifiedPack",
+  "version": "1.0.0",
+  "appName": "BAST · Detail Intelligence",
+  "exportedAt": "2026-04-28T18:43:30.000Z",
+  "_readme": [
+    "Paquete unificado para Retool. Contiene 3 secciones independientes — usar la que necesites.",
+    "1) `blueprint` (markdown como string): spec leíble paso a paso para humano o LLM.",
+    "2) `dataContract` (JSON Schema 2020-12): forma exacta del payload que el backend debe devolver.",
+    "3) `bootstrap` (manifest declarativo): resources, queries, widgets, eventos. Ideal para Retool AI.",
+    "Toda la lógica de KPIs, funnel, top categorías y heatmap se calcula en transformers JS dentro de Retool.",
+    "El backend solo devuelve `rows[]` cumpliendo `dataContract.$defs.Row`.",
+    "Cómo cargarlo en Retool AI: `Crea una app desde la sección bootstrap de este JSON, respetando blueprint y dataContract`."
+  ],
+  "blueprint": "# BAST · Detail Intelligence — Retool Blueprint\n\n> Spec para reconstruir la dashboard **Detail Intelligence v5** dentro de Retool.\n> No incluye datos. Define **estructura, estética, contrato I/O, fuentes y eventos**.\n> Usar junto con `bast_detail_schema.json` (contrato de payload) y `bast_detail_bootstrap.json` (manifest compacto).\n\n---\n\n## 1. Objetivo del dashboard\n\nVista única que consolida **6 fuentes de precio por SKU** del catálogo Heineman para responder en un golpe de vista a:\n\n- ¿En qué SKUs **somos más baratos** que el mercado?\n- ¿Dónde tenemos **mayor margen acumulable** (cost vs min_market × qty)?\n- ¿Qué **leads/sales** ya están moviéndose en pipeline y a qué precio?\n- ¿Qué SKUs **carecen de price discovery** (ws1/ws2/MSRP) y necesitan investigación?\n\n---\n\n## 2. Layout (12 columnas, mobile breakpoint = 8)\n\n```\n┌─────────────────────────────────────────────────────────────────────────┐\n│ Header  · title (h2) + subtitle + 3 controles a la derecha              │  rows 0-1\n├─────────────────────────────────────────────────────────────────────────┤\n│ Filters · [parámetro orden] [categoría] [search] [exportCSV]            │  row 2\n├─────────────────────────────────────────────────────────────────────────┤\n│ Hero KPIs · 6 statistic cards en línea (2 cols cada una)                │  rows 3-4\n│ ┌────────┬────────┬────────┬────────┬────────┬────────┐                 │\n│ │ violet │  blue  │  cyan  │ green  │  pink  │ amber  │                 │\n│ └────────┴────────┴────────┴────────┴────────┴────────┘                 │\n├─────────────────────────────────────────────────────────────────────────┤\n│ Pipeline funnel (7 cols)        │  Top categorías (5 cols)              │  rows 5-9\n│ 6 etapas · barra horizontal     │  10 filas · barra horizontal · click  │\n├─────────────────────────────────────────────────────────────────────────┤\n│ Detail rows table (12 cols · sticky header · grouped headers · 19 cols) │  rows 10-22\n└─────────────────────────────────────────────────────────────────────────┘\n```\n\n---\n\n## 3. Resources requeridos\n\nCrear en **Retool > Resources** uno de los siguientes (o mantener uno existente con la misma forma):\n\n| Resource id        | Tipo        | Tabla / endpoint                                  | Notas |\n|--------------------|-------------|---------------------------------------------------|-------|\n| `bast_supabase`    | PostgreSQL  | `public.detail_intelligence_v` (vista materializada) | **Recomendado.** Una sola vista que ya devuelve las 26 columnas del schema. |\n| `bast_rest`        | REST API    | `GET /api/detail-intelligence`                     | Endpoint que devuelve `{ rows: [...] }` con el shape del JSON Schema. |\n| `bast_hubspot`     | HubSpot     | OAuth Hub `148358528`                              | Solo para deeplinks de Order ID; no obligatorio para datos. |\n| `bast_slack`       | Slack       | Workspace `T0B05EVQ19A` channel `C0B08DKCUBU`     | Solo para deeplinks. |\n\n> Si la fuente es Supabase, la vista `detail_intelligence_v` se construye en SQL así (idea conceptual, no datos):\n>\n> ```sql\n> CREATE OR REPLACE VIEW detail_intelligence_v AS\n> SELECT\n>   c.barcode, c.name, c.brand, c.category, c.size, c.sku, c.cost,\n>   o.last_seen_at AS offer_date, o.id AS offer_id,\n>   s.order_id, s.unit_price AS sale_price, s.closed_at AS sale_date, s.qty AS sale_qty,\n>   ln1.price AS ws1_price, ln1.company AS ws1_company,\n>   ln2.price AS ws2_price, ln2.company AS ws2_company,\n>   t.avg_price AS trader_price,\n>   m.primary  AS msrp,  m.secondary AS msrp2,\n>   LEAST(ln1.price, ln2.price, t.avg_price, m.primary, m.secondary) AS min_market,\n>   GREATEST(ln1.price, ln2.price, t.avg_price, m.primary, m.secondary) AS max_market,\n>   (c.cost < LEAST(ln1.price, ln2.price, t.avg_price, m.primary, m.secondary)) AS we_cheaper,\n>   ROUND(((LEAST(...) - c.cost) / NULLIF(LEAST(...), 0)) * 100, 1) AS margin_pct,\n>   (LEAST(...) - c.cost) AS margin_eur\n> FROM catalog c\n> LEFT JOIN offers o      ON o.sku = c.sku AND o.active\n> LEFT JOIN sales  s      ON s.barcode = c.barcode AND s.status IN ('won','requested')\n> LEFT JOIN lists_now ln1 ON ln1.barcode = c.barcode AND ln1.rank = 1\n> LEFT JOIN lists_now ln2 ON ln2.barcode = c.barcode AND ln2.rank = 2\n> LEFT JOIN traders t     ON t.barcode = c.barcode\n> LEFT JOIN msrp m        ON m.barcode = c.barcode;\n> ```\n\n---\n\n## 4. Queries (en este orden de creación)\n\n| # | name | type | runs on page load | depende de | propósito |\n|---|------|------|-------------------|------------|-----------|\n| 1 | `detailRaw` | SQL/REST query al resource | ✅ | resource | Devuelve `rows[]` crudas. Cero transformación. |\n| 2 | `detailData` | JSQuery transformer | ✅ | `detailRaw` | Empaqueta `{ rows, generatedAt: moment().toISOString(), currency: 'EUR' }`. |\n| 3 | `detailRows` | JSQuery transformer | ✅ | `detailData`, `detailParam`, `detailCategory` | Filtra por categoría, ordena por parámetro, agrega `heat_*` (quintile rank por columna). Ver §7. |\n| 4 | `kpis` | JSQuery transformer | ✅ | `detailData` | Devuelve `{ total_items, with_sale, with_ws1, with_msrp, avg_margin_pct, total_opportunity_eur, total_sale_value_eur }`. Fórmulas en `bast_detail_schema.json#x-derivedKpis`. |\n| 5 | `funnelRows` | JSQuery transformer | ✅ | `detailData` | Devuelve los 6 stages del funnel con `{ stage, count, pct, palette }`. Fórmulas en `#x-funnelStages`. |\n| 6 | `categoryRows` | JSQuery transformer | ✅ | `detailData` | Top 10 categorías por count desc. |\n| 7 | `categoryOptions` | JSQuery transformer | ✅ | `categoryRows` | `[{label:'Todas las categorías', value:''}, ...categoryRows.map(...)]`. |\n| 8 | `exportCsv` | JSQuery on-click | manual | `detailRows` | `utils.exportData({{detailRows.value}}, 'detail_intelligence_'+moment().format('YYYY-MM-DD'), 'csv')`. |\n\n> Toda la lógica está en transformers JS. El resource backend solo tiene que servir `rows[]`.\n\n---\n\n## 5. Componentes (widgets)\n\n### 5.1 Header\n\n| name | tipo | binding | estilo |\n|------|------|---------|--------|\n| `title` | Text | markdown `## Detail Intelligence` | color `--text-primary` |\n| `subtitle` | Text | `Cada fila consolida 6 fuentes · catálogo · ofertas · sales · wholesale 1/2 · trader · MSRP · todo linkeable al origen` | color `--text-muted`, fontSize 13 |\n| `lastSyncBadge` | Tag | `Última sync: {{ moment({{detailData.value.generatedAt}}).fromNow() }}` | tagColor: green si <15min, amber si <1h, red si >1h |\n\n### 5.2 Filtros (row 2)\n\n| name | tipo | binding | default | onChange |\n|------|------|---------|---------|----------|\n| `detailParam` | Select | options ver §6 | `best_margin` | `detailRows.trigger()` |\n| `detailCategory` | Select | `data: {{categoryOptions.value}}` | `''` | `detailRows.trigger()` |\n| `detailSearch` | Text Input | placeholder `Buscar barcode, nombre, brand...` | `''` | debounce 250ms → `detailRows.trigger()` |\n| `detailExport` | Button | `Exportar CSV` | — | `exportCsv.trigger()` |\n\n### 5.3 Hero KPIs (row 3-4 · 6 cards)\n\nCada card es **Statistic** con `background: linear-gradient(135deg, <c1> 0%, <c2> 100%)`, `color: #FFFFFF`.\n\n| name | label | primaryValue | secondaryLabel | gradient |\n|------|-------|--------------|----------------|----------|\n| `kpi1_items` | SKUs activos | `{{kpis.value.total_items}}` | `catálogo Heineman` | `#6D28D9 → #8B5CF6` violet |\n| `kpi2_ws1` | Con price discovery | `{{kpis.value.with_ws1}}` | `{{Math.round(kpis.value.with_ws1*100/kpis.value.total_items)}}% del catálogo` | `#1D4ED8 → #3B82F6` blue |\n| `kpi3_msrp` | Con MSRP comparado | `{{kpis.value.with_msrp}}` | `{{Math.round(kpis.value.with_msrp*100/kpis.value.total_items)}}% del catálogo` | `#0E7490 → #06B6D4` cyan |\n| `kpi4_sale` | Sales en pipeline | `{{kpis.value.with_sale}}` | `€ {{Number(kpis.value.total_sale_value_eur).toLocaleString('es-ES',{minimumFractionDigits:2})}} valor pipeline` | `#047857 → #10B981` green |\n| `kpi5_margin` | Margen promedio | `{{kpis.value.avg_margin_pct.toFixed(1)}}%` | `vs precio más bajo del mercado` | `#BE185D → #EC4899` pink |\n| `kpi6_opp` | Oportunidad total | `€ {{Number(kpis.value.total_opportunity_eur).toLocaleString('es-ES',{minimumFractionDigits:2})}}` | `margen acumulable` | `#B45309 → #F59E0B` amber |\n\n### 5.4 Funnel (row 5-9, cols 0-7)\n\nComponente: **Listview** + Container por fila, o **Custom Component** simple.\nData: `{{funnelRows.value}}`.\n\nPor fila renderizar:\n```\n[ stage label · 30%w ] [ progress bar · 50%w · width = count/maxCount * 100% · gradient(palette) ] [ count · 10%w ] [ pct · 10%w ]\n```\n\n### 5.5 Top categorías (row 5-9, cols 7-12)\n\nComponente: **Table** mínima.\nData: `{{categoryRows.value}}`.\nColumnas: `name` (tag), `count` (number).\nClick en fila: `detailCategory.setValue({{currentRow.name}}); detailRows.trigger()`.\n\n### 5.6 Detail rows table (row 10-22, full width)\n\nComponente: **Table** (new Table widget v3+).\nData: `{{detailRows.value}}`.\nSettings:\n- `rowHeight: compact`\n- `stickyHeader: true`\n- `searchEnabled: true` (se usa `detailSearch` para no duplicar)\n- `exportEnabled: true`\n- `paginationType: virtual` (80+ filas)\n\n**Columnas (19) y heatmap** — ver tabla §6.\n\n**Grupos de columnas (header gradient)**:\n\n| Grupo | Columnas | Gradient |\n|-------|----------|----------|\n| ITEM           | barcode · name · brand · category | `#6D28D9 → #8B5CF6` violet |\n| OFFERS WE HAVE | sku · cost · offer_date            | `#1D4ED8 → #3B82F6` blue |\n| SALES / NEED   | order_id · sale_price · sale_date · sale_qty | `#047857 → #10B981` green |\n| WHOLESALE 1    | ws1_price · ws1_company            | `#0E7490 → #06B6D4` cyan |\n| WHOLESALE 2    | ws2_price · ws2_company            | `#155E75 → #0891B2` cyan-dark |\n| TRADER         | trader_price                        | `#B45309 → #F59E0B` amber |\n| MSRP           | msrp · msrp2 · margin_pct          | `#BE185D → #EC4899` pink |\n\n**Row actions** (overflow menu por fila):\n- `Abrir en HubSpot` → `https://app.hubspot.com/contacts/148358528/objects/0-1/views/all/list?searchString={{currentRow.brand}}`\n- `Buscar en Slack` → `https://app.slack.com/client/T0B05EVQ19A/C0B08DKCUBU?query={{currentRow.barcode}}`\n- `Buscar MSRP en Amazon` → `https://www.amazon.com/s?k={{encodeURIComponent(currentRow.brand+' '+currentRow.name)}}`\n\n**Empty state**: `No hay filas con esos filtros. Probá quitar la categoría o cambiar el parámetro de orden.`\n\n---\n\n## 6. Mapping completo de columnas\n\n| Col | key | label | format | decimales | linkType | linkTarget | heatmap palette | heatmap invert | rank field |\n|-----|-----|-------|--------|-----------|----------|------------|-----------------|----------------|------------|\n| 1 | barcode | Barcode | string | — | internal | `#catalog` | — | — | — |\n| 2 | name | Item | string | — | internal | `#catalog` | — | — | — |\n| 3 | brand | Brand | string | — | — | — | — | — | — |\n| 4 | category | Categoría | tag (violet) | — | — | — | — | — | — |\n| 5 | sku | SKU Heineman | mono | — | — | — | — | — | — |\n| 6 | cost | Cost | currency EUR | 2 | — | — | green | **true** | heat_cost |\n| 7 | offer_date | Offer Date | date YYYY-MM-DD | — | internal | `#ofertas` | — | — | — |\n| 8 | order_id | Order ID | mono | — | internal | `#leads` | — | — | — |\n| 9 | sale_price | Sale Price | currency EUR | 2 | — | — | green | false | heat_sale_price |\n| 10 | sale_date | Sale Date | date | — | — | — | — | — | — |\n| 11 | sale_qty | Qty | integer | 0 | — | — | green | false | heat_sale_qty |\n| 12 | ws1_price | WS1 Price | currency EUR | 2 | — | — | blue | false | heat_ws1 |\n| 13 | ws1_company | WS1 Company | string | — | internal | `#listas` | — | — | — |\n| 14 | ws2_price | WS2 Price | currency EUR | 2 | — | — | cyan | false | heat_ws2 |\n| 15 | ws2_company | WS2 Company | string | — | internal | `#listas` | — | — | — |\n| 16 | trader_price | Trader Price | currency EUR | 2 | — | — | amber | false | heat_trader |\n| 17 | msrp | MSRP | currency EUR | 2 | external | Amazon search | pink | false | heat_msrp |\n| 18 | msrp2 | MSRP 2 | currency EUR | 2 | external | Amazon search | pink | false | heat_msrp2 |\n| 19 | margin_pct | Margen % | number + % suffix | 1 | — | — | margin (violet) | false | heat_margin |\n\n### 6.1 Parámetros de orden (`detailParam`)\n\n| value | label | sort logic |\n|-------|-------|------------|\n| `best_margin` | Mayor margen | `margin_pct desc, nulls last` |\n| `cheapest` | Cost más bajo | `cost asc, nulls last` |\n| `highest_msrp` | MSRP más alto | `msrp desc, nulls last` |\n| `recent_offer` | Oferta reciente | `offer_date desc` |\n| `recent_sale` | Sale reciente | `sale_date desc, nulls last` |\n| `highest_qty` | Mayor cantidad | `sale_qty desc, nulls last` |\n\n### 6.2 Heatmap quintile (palette × 5 niveles)\n\nPor cada columna con heatmap, calcular el quintile rank (1..5) sobre los valores no-null de esa columna en `detailData.value.rows` (el universo, no las filas filtradas — para que el contraste no cambie al filtrar). `invert: true` significa low value → high heat.\n\n| Palette | Q1 | Q2 | Q3 | Q4 | Q5 (más caliente) |\n|---------|----|----|----|----|---|\n| green   | `#0F4031` | `#136D45` | `#178757` | `#1AA66B` | `#22C55E` |\n| blue    | `#172554` | `#1E3A8A` | `#2563EB` | `#3B82F6` | `#60A5FA` |\n| cyan    | `#0E3A4A` | `#0F4D5C` | `#0E7490` | `#0891B2` | `#06B6D4` |\n| amber   | `#451A03` | `#78350F` | `#B45309` | `#D97706` | `#F59E0B` |\n| pink    | `#500724` | `#831843` | `#BE185D` | `#DB2777` | `#EC4899` |\n| margin  | `#2E1065` | `#4C1D95` | `#6D28D9` | `#7C3AED` | `#8B5CF6` |\n\nTexto siempre `#FFFFFF`. Celda vacía → `td-empty` (color `#475569`, contenido `—`).\n\n---\n\n## 7. Transformer `detailRows` (JS de referencia)\n\n```js\nconst all = {{detailData.value}}.rows;\nconst cat = {{detailCategory.value}} || '';\nconst param = {{detailParam.value}} || 'best_margin';\nconst q = ({{detailSearch.value}} || '').toLowerCase().trim();\n\nlet rows = all.slice();\nif (cat) rows = rows.filter(r => r.category === cat);\nif (q) rows = rows.filter(r =>\n  (r.barcode||'').toLowerCase().includes(q) ||\n  (r.name||'').toLowerCase().includes(q) ||\n  (r.brand||'').toLowerCase().includes(q) ||\n  (r.sku||'').toLowerCase().includes(q)\n);\n\nconst sortMap = {\n  best_margin:  { k: 'margin_pct',  dir: 'desc' },\n  cheapest:     { k: 'cost',        dir: 'asc'  },\n  highest_msrp: { k: 'msrp',        dir: 'desc' },\n  recent_offer: { k: 'offer_date',  dir: 'desc' },\n  recent_sale:  { k: 'sale_date',   dir: 'desc' },\n  highest_qty:  { k: 'sale_qty',    dir: 'desc' },\n};\nconst { k, dir } = sortMap[param] || sortMap.best_margin;\nrows.sort((a, b) => {\n  const va = a[k] == null ? (dir==='asc' ? Infinity : -Infinity) : a[k];\n  const vb = b[k] == null ? (dir==='asc' ? Infinity : -Infinity) : b[k];\n  if (typeof va === 'string') return dir==='asc' ? va.localeCompare(vb) : vb.localeCompare(va);\n  return dir==='asc' ? va - vb : vb - va;\n});\n\n// quintile rank por columna sobre el universo entero\nconst cols = ['cost','sale_price','sale_qty','ws1_price','ws2_price','trader_price','msrp','msrp2','margin_pct'];\nconst sortedByCol = {};\ncols.forEach(c => sortedByCol[c] = all.map(r=>r[c]).filter(v=>v!=null && !isNaN(v)).sort((a,b)=>a-b));\nconst quintile = (val, sorted, invert) => {\n  if (val == null || isNaN(val) || !sorted.length) return 0;\n  let pos = sorted.findIndex(v => v >= val);\n  if (pos === -1) pos = sorted.length - 1;\n  let pct = pos / Math.max(1, sorted.length - 1);\n  if (invert) pct = 1 - pct;\n  if (pct >= 0.8) return 5;\n  if (pct >= 0.6) return 4;\n  if (pct >= 0.4) return 3;\n  if (pct >= 0.2) return 2;\n  return 1;\n};\n\nreturn rows.map(r => Object.assign({}, r, {\n  heat_cost:       quintile(r.cost,         sortedByCol.cost,         true),\n  heat_sale_price: quintile(r.sale_price,   sortedByCol.sale_price,   false),\n  heat_sale_qty:   quintile(r.sale_qty,     sortedByCol.sale_qty,     false),\n  heat_ws1:        quintile(r.ws1_price,    sortedByCol.ws1_price,    false),\n  heat_ws2:        quintile(r.ws2_price,    sortedByCol.ws2_price,    false),\n  heat_trader:     quintile(r.trader_price, sortedByCol.trader_price, false),\n  heat_msrp:       quintile(r.msrp,         sortedByCol.msrp,         false),\n  heat_msrp2:      quintile(r.msrp2,        sortedByCol.msrp2,        false),\n  heat_margin:     quintile(r.margin_pct,   sortedByCol.margin_pct,   false),\n}));\n```\n\nCada columna con heatmap usa **Conditional Formatting** con 5 reglas:\n```\nCondition: {{ currentRow.heat_<rank_field> }} === 1   →   bg = palette Q1, text #FFFFFF\nCondition: {{ currentRow.heat_<rank_field> }} === 2   →   bg = palette Q2, text #FFFFFF\n... hasta 5\n```\n\n---\n\n## 8. Estética global (theme tokens)\n\nAplicar en **App settings > Custom CSS** o en **Theme**:\n\n```css\n:root {\n  --bg-0: #0B0F19;\n  --bg-1: #111726;\n  --bg-2: #1E293B;\n  --border: #334155;\n  --text-primary: #F8FAFC;\n  --text: #E5E7EB;\n  --text-muted: #94A3B8;\n  --text-empty: #475569;\n  --accent-violet: #8B5CF6;\n  --accent-blue:   #3B82F6;\n  --accent-cyan:   #06B6D4;\n  --accent-green:  #10B981;\n  --accent-pink:   #EC4899;\n  --accent-amber:  #F59E0B;\n  --radius: 12px;\n  --font-sans: 'Inter', 'DM Sans', system-ui, sans-serif;\n  --font-mono: 'JetBrains Mono', ui-monospace, monospace;\n}\n\n._retool-detailTable thead tr th { background: var(--bg-2) !important; color: var(--text); }\n._retool-detailTable tbody td.td-mono { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-muted); }\n._retool-detailTable tbody td.td-empty { color: var(--text-empty); }\n```\n\nTipografía: pesos 500 para body, 600 para tags y KPIs, 700 para títulos h2.\nBorder-radius global 12px en cards y tables.\nSombra de elevación sutil: `0 1px 2px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.2)`.\n\n---\n\n## 9. Eventos / interacciones globales\n\n| Evento | Acción |\n|--------|--------|\n| `detailParam.onChange` | `detailRows.trigger()` |\n| `detailCategory.onChange` | `detailRows.trigger()` |\n| `detailSearch.onChange` (debounce 250) | `detailRows.trigger()` |\n| `categoryTable.onRowClick` | `detailCategory.setValue({{currentRow.name}}); detailRows.trigger()` |\n| `funnelRow.onClick` (custom) | filtro implícito por stage (opcional · v6) |\n| `detailExport.onClick` | `exportCsv.trigger()` |\n| `detailTable.onRowClick` | abrir modal `rowDetailModal` (opcional · v6) |\n\n---\n\n## 10. Responsive\n\nBreakpoint mobile: 8 columns.\n- KPIs pasan a 2 cols × 3 rows\n- Funnel y Top categorías se apilan verticalmente\n- Detail table mantiene scroll horizontal con sticky `barcode` + `name`\n\n---\n\n## 11. Performance\n\n- Backend devuelve max 5000 rows · paginar después en transformer si crece\n- Transformer `detailRows` es O(n log n) por sort, aceptable hasta ~10k rows\n- `Table.paginationType = virtual` obligatorio si `detailData.value.rows.length > 200`\n- Cachear `detailData` con `cacheKeyTtl: 300` segundos en Retool\n\n---\n\n## 12. Cómo construir esto en Retool en 30 minutos\n\n1. **Crear app vacía** en blanco. Pegar el CSS de §8 en App > Custom CSS.\n2. **Crear el Resource** Postgres/REST que apunte al backend de BAST.\n3. **Crear `detailRaw`** apuntando a la vista o endpoint. Marcar \"Run on page load\".\n4. **Crear los 7 transformers** del §4 copiando los snippets de §7 y de `bast_detail_schema.json#x-derivedKpis`.\n5. **Drag & drop** 6 Statistic widgets para los KPIs · pegar bindings de §5.3.\n6. **Drag & drop** los 2 Selects + 1 TextInput + 1 Button del §5.2.\n7. **Drag & drop** 2 Tables (funnel + categorías) y configurar sus columnas.\n8. **Drag & drop** la Table principal · agregar las 19 columnas con sus formatos · activar Conditional Formatting con las 5 reglas por palette de §6.2 · activar Column groups con los 7 grupos del §5.6.\n9. Conectar todos los `onChange` del §9.\n10. Probar con datos reales · ajustar paddings · publicar.\n\n---\n\n## 13. Archivos del paquete\n\n| Archivo | Para qué sirve |\n|---------|----------------|\n| `bast_detail_blueprint.md` | **Este archivo.** Spec leíble que cualquier dev puede seguir paso a paso. |\n| `bast_detail_schema.json` | Contrato de datos JSON Schema para validar el payload del backend. |\n| `bast_detail_bootstrap.json` | Manifest compacto para pegarle a Retool AI (\"Create app from this manifest\") o a un script de generación. |\n",
+  "dataContract": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "bast.detail-intelligence.v1",
+    "title": "BAST · Detail Intelligence · Data Contract",
+    "description": "Forma exacta del payload que la query maestra debe devolver para alimentar el dashboard. Toda derivación (KPIs, funnel, top categorías) se hace en transformers JS dentro de Retool sobre `rows`. El backend solo necesita devolver `rows` con los 26 campos.",
+    "type": "object",
+    "required": [
+      "rows"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "rows": {
+        "type": "array",
+        "minItems": 0,
+        "description": "Una fila por SKU del catálogo Heineman. Cada fila consolida 6 fuentes: catálogo, ofertas activas, sales/need list, wholesale 1, wholesale 2, trader, MSRP.",
+        "items": {
+          "$ref": "#/$defs/Row"
+        }
+      },
+      "generatedAt": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Timestamp ISO-8601 en UTC del momento en que se construyó el payload. Usado por el componente `lastSyncBadge` para mostrar 'Última sync: hace Xm'."
+      },
+      "currency": {
+        "type": "string",
+        "default": "EUR",
+        "description": "ISO 4217. Se aplica a todos los campos *_price, cost, msrp, msrp2, margin_eur, total_opportunity_eur, total_sale_value_eur."
+      }
+    },
+    "$defs": {
+      "Row": {
+        "type": "object",
+        "required": [
+          "barcode",
+          "name",
+          "brand",
+          "category",
+          "sku",
+          "cost"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "_meta_group_item": {
+            "type": "null",
+            "description": "Marker · ITEM (catálogo Heineman master)"
+          },
+          "barcode": {
+            "type": "string",
+            "description": "EAN/UPC del SKU. Se usa como ID estable del item. Linkea a la vista #catalog del dashboard.",
+            "x-source": "catalog.barcode",
+            "x-link": "internal:#catalog?barcode={value}"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nombre comercial del producto.",
+            "x-source": "catalog.name",
+            "x-link": "internal:#catalog?barcode={barcode}"
+          },
+          "brand": {
+            "type": "string",
+            "x-source": "catalog.brand"
+          },
+          "category": {
+            "type": "string",
+            "description": "Categoría merchandising (Cognac · Whisk(e)y · SC/Sets · ...).",
+            "x-source": "catalog.category",
+            "x-display": "tag",
+            "x-tag-color": "violet"
+          },
+          "size": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Formato de envase (0.7L, 1.0L, 1.75L, GP).",
+            "x-source": "catalog.size"
+          },
+          "_meta_group_offer": {
+            "type": "null",
+            "description": "Marker · OFFERS WE HAVE (ofertas activas Heineman)"
+          },
+          "sku": {
+            "type": "string",
+            "description": "SKU interno Heineman (HEI-XXXXX).",
+            "x-source": "offers.sku"
+          },
+          "cost": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Costo Heineman EUR. Heatmap inverso: costo bajo = más caliente (mejor margen).",
+            "x-source": "offers.cost",
+            "x-format": "currency",
+            "x-heatmap": {
+              "palette": "green",
+              "invert": true,
+              "rank_field": "heat_cost"
+            }
+          },
+          "offer_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date",
+            "x-source": "offers.last_seen_at",
+            "x-link": "internal:#ofertas?offer_id={offer_id}"
+          },
+          "offer_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "x-source": "offers.id"
+          },
+          "_meta_group_sale": {
+            "type": "null",
+            "description": "Marker · SALES / NEED LIST (operaciones cerradas o solicitadas)"
+          },
+          "order_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "ID del pedido en HubSpot Deal o en el sistema de ventas. Linkea a #leads.",
+            "x-source": "sales.order_id",
+            "x-link": "internal:#leads?order_id={order_id}"
+          },
+          "sale_price": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Precio efectivo de venta o solicitud. Heatmap directo: alto = caliente.",
+            "x-source": "sales.unit_price",
+            "x-format": "currency",
+            "x-heatmap": {
+              "palette": "green",
+              "invert": false,
+              "rank_field": "heat_sale_price"
+            }
+          },
+          "sale_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date",
+            "x-source": "sales.closed_at"
+          },
+          "sale_qty": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "x-source": "sales.qty",
+            "x-format": "integer",
+            "x-heatmap": {
+              "palette": "green",
+              "invert": false,
+              "rank_field": "heat_sale_qty"
+            }
+          },
+          "_meta_group_ws1": {
+            "type": "null",
+            "description": "Marker · WHOLESALE 1 (mayorista principal · Listas NOW)"
+          },
+          "ws1_price": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Precio mayorista 1. Heatmap palette azul.",
+            "x-source": "lists_now.price WHERE rank=1",
+            "x-format": "currency",
+            "x-heatmap": {
+              "palette": "blue",
+              "invert": false,
+              "rank_field": "heat_ws1"
+            }
+          },
+          "ws1_company": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Razón social del mayorista 1. Linkea a #listas.",
+            "x-source": "lists_now.company WHERE rank=1",
+            "x-link": "internal:#listas?company={value}"
+          },
+          "_meta_group_ws2": {
+            "type": "null",
+            "description": "Marker · WHOLESALE 2 (mayorista secundario)"
+          },
+          "ws2_price": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "x-source": "lists_now.price WHERE rank=2",
+            "x-format": "currency",
+            "x-heatmap": {
+              "palette": "cyan",
+              "invert": false,
+              "rank_field": "heat_ws2"
+            }
+          },
+          "ws2_company": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "x-source": "lists_now.company WHERE rank=2",
+            "x-link": "internal:#listas?company={value}"
+          },
+          "_meta_group_trader": {
+            "type": "null",
+            "description": "Marker · TRADER (precio promedio de traders independientes)"
+          },
+          "trader_price": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "x-source": "traders.avg_price",
+            "x-format": "currency",
+            "x-heatmap": {
+              "palette": "amber",
+              "invert": false,
+              "rank_field": "heat_trader"
+            }
+          },
+          "_meta_group_msrp": {
+            "type": "null",
+            "description": "Marker · MSRP (precio público de referencia)"
+          },
+          "msrp": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "MSRP fuente primaria (web oficial / Amazon).",
+            "x-source": "msrp.primary",
+            "x-format": "currency",
+            "x-heatmap": {
+              "palette": "pink",
+              "invert": false,
+              "rank_field": "heat_msrp"
+            },
+            "x-link": "external:https://www.amazon.com/s?k={brand}+{name}"
+          },
+          "msrp2": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "MSRP fuente secundaria (retailer alternativo).",
+            "x-source": "msrp.secondary",
+            "x-format": "currency",
+            "x-heatmap": {
+              "palette": "pink",
+              "invert": false,
+              "rank_field": "heat_msrp2"
+            }
+          },
+          "_meta_group_derived": {
+            "type": "null",
+            "description": "Marker · DERIVED (calculado en backend o transformer)"
+          },
+          "min_market": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "min(ws1_price, ws2_price, trader_price, msrp, msrp2) ignorando nulls.",
+            "x-source": "derived"
+          },
+          "max_market": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "max(ws1_price, ws2_price, trader_price, msrp, msrp2) ignorando nulls.",
+            "x-source": "derived"
+          },
+          "we_cheaper": {
+            "type": "boolean",
+            "description": "True si cost < min_market. Trigger del badge verde 'Donde somos más baratos'.",
+            "x-source": "derived"
+          },
+          "margin_pct": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "(min_market - cost) / min_market * 100. Heatmap palette violeta.",
+            "x-source": "derived",
+            "x-format": "percent",
+            "x-decimals": 1,
+            "x-heatmap": {
+              "palette": "margin",
+              "invert": false,
+              "rank_field": "heat_margin"
+            }
+          },
+          "margin_eur": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "(min_market - cost) en EUR.",
+            "x-source": "derived",
+            "x-format": "currency"
+          }
+        }
+      }
+    },
+    "x-derivedKpis": {
+      "description": "KPIs calculados por la query JS `kpiCalc` sobre `detailData.value.rows`. NO los devuelve el backend.",
+      "fields": {
+        "total_items": {
+          "expr": "rows.length"
+        },
+        "with_sale": {
+          "expr": "rows.filter(r => r.order_id).length"
+        },
+        "with_ws1": {
+          "expr": "rows.filter(r => r.ws1_price != null).length"
+        },
+        "with_msrp": {
+          "expr": "rows.filter(r => r.msrp != null).length"
+        },
+        "we_cheaper_count": {
+          "expr": "rows.filter(r => r.we_cheaper).length"
+        },
+        "avg_margin_pct": {
+          "expr": "mean(rows.filter(r => r.margin_pct != null).map(r => r.margin_pct))"
+        },
+        "total_opportunity_eur": {
+          "expr": "sum(rows.filter(r => r.margin_eur != null).map(r => r.margin_eur * (r.sale_qty || 1)))"
+        },
+        "total_sale_value_eur": {
+          "expr": "sum(rows.filter(r => r.sale_price && r.sale_qty).map(r => r.sale_price * r.sale_qty))"
+        }
+      }
+    },
+    "x-funnelStages": [
+      {
+        "key": "items",
+        "label": "Items en catálogo",
+        "expr": "rows.length",
+        "palette": "violet"
+      },
+      {
+        "key": "withOffer",
+        "label": "Con oferta activa",
+        "expr": "rows.filter(r => r.cost != null).length",
+        "palette": "blue"
+      },
+      {
+        "key": "withWs1",
+        "label": "Con price discovery",
+        "expr": "rows.filter(r => r.ws1_price != null).length",
+        "palette": "cyan"
+      },
+      {
+        "key": "withMsrp",
+        "label": "Con MSRP comparado",
+        "expr": "rows.filter(r => r.msrp != null).length",
+        "palette": "pink"
+      },
+      {
+        "key": "withSale",
+        "label": "Con sale en pipeline",
+        "expr": "rows.filter(r => r.order_id).length",
+        "palette": "green"
+      },
+      {
+        "key": "weCheaper",
+        "label": "Donde somos más baratos",
+        "expr": "rows.filter(r => r.we_cheaper).length",
+        "palette": "amber"
+      }
+    ],
+    "x-topCategories": {
+      "description": "Conteo desc por r.category, top 10. Click en una categoría hace setValue del select detailCategory."
+    }
+  },
+  "bootstrap": {
+    "$schema": "bast.detail-intelligence.bootstrap.v1",
+    "kind": "RetoolAppBootstrap",
+    "appName": "BAST · Detail Intelligence",
+    "appDescription": "Dashboard que consolida 6 fuentes de precio por SKU del catálogo Heineman: catálogo · ofertas · sales/need list · wholesale 1 · wholesale 2 · trader · MSRP. Heatmap por columna, linkeable al origen, parámetros de orden cheaper / best margin / recent.",
+    "appIcon": "BarChart3",
+    "appBackground": "#0B0F19",
+    "instructionsForLLM": [
+      "Construir la app dentro de Retool usando widgets nativos.",
+      "NO inventar datos. Toda la data debe llegar desde el resource backend declarado en `resources[0]`.",
+      "El payload del backend debe matchear `dataContract` (ver `bast_detail_schema.json`).",
+      "Toda derivación (KPIs, funnel, top categorías, heatmap) se hace en transformers JS dentro de Retool.",
+      "Aplicar el theme `themeTokens` en Custom CSS de la app.",
+      "Crear los 8 widgets del bloque `widgets` con los bindings y eventos especificados.",
+      "Cada columna del detailTable con `heatmap` debe tener Conditional Formatting de 5 reglas (una por quintile)."
+    ],
+    "themeTokens": {
+      "bg": {
+        "level0": "#0B0F19",
+        "level1": "#111726",
+        "level2": "#1E293B",
+        "border": "#334155"
+      },
+      "text": {
+        "primary": "#F8FAFC",
+        "default": "#E5E7EB",
+        "muted": "#94A3B8",
+        "empty": "#475569"
+      },
+      "accents": {
+        "violet": "#8B5CF6",
+        "blue": "#3B82F6",
+        "cyan": "#06B6D4",
+        "green": "#10B981",
+        "pink": "#EC4899",
+        "amber": "#F59E0B"
+      },
+      "radius": 12,
+      "fontSans": "Inter, 'DM Sans', system-ui, sans-serif",
+      "fontMono": "'JetBrains Mono', ui-monospace, monospace",
+      "shadowCard": "0 1px 2px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.2)"
+    },
+    "resources": [
+      {
+        "id": "bast_main",
+        "type": "postgres|rest",
+        "purpose": "Devuelve el payload completo del dashboard. Una sola query.",
+        "preferredImpl": "Postgres view `public.detail_intelligence_v` o REST GET `/api/detail-intelligence`.",
+        "expectedShape": "Ver bast_detail_schema.json"
+      },
+      {
+        "id": "hubspot",
+        "type": "hubspot",
+        "purpose": "Solo para deep-links de Order ID",
+        "hubId": "148358528",
+        "optional": true
+      },
+      {
+        "id": "slack",
+        "type": "slack",
+        "purpose": "Solo para deep-links",
+        "workspace": "T0B05EVQ19A",
+        "channel": "C0B08DKCUBU",
+        "optional": true
+      }
+    ],
+    "queries": [
+      {
+        "name": "detailRaw",
+        "kind": "ResourceQuery",
+        "resource": "bast_main",
+        "runOnPageLoad": true,
+        "cacheTtl": 300,
+        "expects": "{ rows: Row[] }",
+        "notes": "Cero transformación. Si la fuente devuelve un array directo en lugar de {rows:[...]}, envolverlo en el siguiente transformer."
+      },
+      {
+        "name": "detailData",
+        "kind": "Transformer",
+        "depends": [
+          "detailRaw"
+        ],
+        "runOnPageLoad": true,
+        "code": "const r = {{detailRaw.data}}; const rows = Array.isArray(r) ? r : (r && r.rows) || []; return { rows, generatedAt: moment().toISOString(), currency: 'EUR' };"
+      },
+      {
+        "name": "detailRows",
+        "kind": "Transformer",
+        "depends": [
+          "detailData",
+          "detailParam",
+          "detailCategory",
+          "detailSearch"
+        ],
+        "runOnPageLoad": true,
+        "codeRef": "bast_detail_blueprint.md §7"
+      },
+      {
+        "name": "kpis",
+        "kind": "Transformer",
+        "depends": [
+          "detailData"
+        ],
+        "runOnPageLoad": true,
+        "code": "const rows = ({{detailData.value}}.rows)||[]; const sum = a => a.reduce((x,y)=>x+y,0); const mean = a => a.length ? sum(a)/a.length : 0; return { total_items: rows.length, with_sale: rows.filter(r=>r.order_id).length, with_ws1: rows.filter(r=>r.ws1_price!=null).length, with_msrp: rows.filter(r=>r.msrp!=null).length, we_cheaper_count: rows.filter(r=>r.we_cheaper).length, avg_margin_pct: Number(mean(rows.filter(r=>r.margin_pct!=null).map(r=>r.margin_pct)).toFixed(1)), total_opportunity_eur: Number(sum(rows.filter(r=>r.margin_eur!=null).map(r=>(r.margin_eur||0)*((r.sale_qty)||1))).toFixed(2)), total_sale_value_eur: Number(sum(rows.filter(r=>r.sale_price&&r.sale_qty).map(r=>r.sale_price*r.sale_qty)).toFixed(2)) };"
+      },
+      {
+        "name": "funnelRows",
+        "kind": "Transformer",
+        "depends": [
+          "detailData"
+        ],
+        "runOnPageLoad": true,
+        "code": "const rows = ({{detailData.value}}.rows)||[]; const total = rows.length||1; const stages = [ {key:'items',label:'Items en catálogo',count:rows.length,palette:'violet'}, {key:'withOffer',label:'Con oferta activa',count:rows.filter(r=>r.cost!=null).length,palette:'blue'}, {key:'withWs1',label:'Con price discovery',count:rows.filter(r=>r.ws1_price!=null).length,palette:'cyan'}, {key:'withMsrp',label:'Con MSRP comparado',count:rows.filter(r=>r.msrp!=null).length,palette:'pink'}, {key:'withSale',label:'Con sale en pipeline',count:rows.filter(r=>r.order_id).length,palette:'green'}, {key:'weCheaper',label:'Donde somos más baratos',count:rows.filter(r=>r.we_cheaper).length,palette:'amber'} ]; return stages.map(s=>Object.assign({},s,{pct: Number((s.count*100/total).toFixed(1))}));"
+      },
+      {
+        "name": "categoryRows",
+        "kind": "Transformer",
+        "depends": [
+          "detailData"
+        ],
+        "runOnPageLoad": true,
+        "code": "const rows = ({{detailData.value}}.rows)||[]; const counts = {}; rows.forEach(r => { const k = r.category || '—'; counts[k] = (counts[k]||0)+1; }); return Object.entries(counts).map(([name,count])=>({name,count})).sort((a,b)=>b.count-a.count).slice(0,10);"
+      },
+      {
+        "name": "categoryOptions",
+        "kind": "Transformer",
+        "depends": [
+          "categoryRows"
+        ],
+        "runOnPageLoad": true,
+        "code": "return [{label:'Todas las categorías',value:''}].concat(({{categoryRows.value}}||[]).map(c=>({label:c.name+' ('+c.count+')',value:c.name})));"
+      },
+      {
+        "name": "exportCsv",
+        "kind": "JSAction",
+        "depends": [
+          "detailRows"
+        ],
+        "runOnPageLoad": false,
+        "code": "utils.exportData({{detailRows.value}}, 'detail_intelligence_'+moment().format('YYYY-MM-DD'), 'csv');"
+      }
+    ],
+    "widgets": [
+      {
+        "name": "title",
+        "type": "text",
+        "row": 0,
+        "col": 0,
+        "w": 9,
+        "h": 1,
+        "props": {
+          "value": "## Detail Intelligence",
+          "color": "#F8FAFC"
+        }
+      },
+      {
+        "name": "subtitle",
+        "type": "text",
+        "row": 1,
+        "col": 0,
+        "w": 9,
+        "h": 1,
+        "props": {
+          "value": "Cada fila consolida 6 fuentes · catálogo · ofertas · sales · wholesale 1/2 · trader · MSRP · todo linkeable al origen",
+          "color": "#94A3B8",
+          "fontSize": 13
+        }
+      },
+      {
+        "name": "lastSyncBadge",
+        "type": "tag",
+        "row": 0,
+        "col": 9,
+        "w": 3,
+        "h": 1,
+        "props": {
+          "value": "Última sync: {{ moment({{detailData.value.generatedAt}}).fromNow() }}",
+          "tagColor": "{{ moment().diff(moment({{detailData.value.generatedAt}}),'minutes') < 15 ? 'green' : moment().diff(moment({{detailData.value.generatedAt}}),'minutes') < 60 ? 'amber' : 'red' }}"
+        }
+      },
+      {
+        "name": "detailParam",
+        "type": "select",
+        "row": 2,
+        "col": 0,
+        "w": 3,
+        "h": 1,
+        "props": {
+          "label": "Parámetro de orden",
+          "defaultValue": "best_margin",
+          "values": [
+            {
+              "label": "Mayor margen",
+              "value": "best_margin"
+            },
+            {
+              "label": "Cost más bajo",
+              "value": "cheapest"
+            },
+            {
+              "label": "MSRP más alto",
+              "value": "highest_msrp"
+            },
+            {
+              "label": "Oferta reciente",
+              "value": "recent_offer"
+            },
+            {
+              "label": "Sale reciente",
+              "value": "recent_sale"
+            },
+            {
+              "label": "Mayor cantidad",
+              "value": "highest_qty"
+            }
+          ]
+        },
+        "events": [
+          {
+            "on": "change",
+            "action": "trigger",
+            "target": "detailRows"
+          }
+        ]
+      },
+      {
+        "name": "detailCategory",
+        "type": "select",
+        "row": 2,
+        "col": 3,
+        "w": 3,
+        "h": 1,
+        "props": {
+          "label": "Categoría",
+          "defaultValue": "",
+          "data": "{{categoryOptions.value}}"
+        },
+        "events": [
+          {
+            "on": "change",
+            "action": "trigger",
+            "target": "detailRows"
+          }
+        ]
+      },
+      {
+        "name": "detailSearch",
+        "type": "textInput",
+        "row": 2,
+        "col": 6,
+        "w": 3,
+        "h": 1,
+        "props": {
+          "label": "Buscar",
+          "placeholder": "barcode · nombre · brand · sku"
+        },
+        "events": [
+          {
+            "on": "change",
+            "action": "trigger",
+            "target": "detailRows",
+            "debounce": 250
+          }
+        ]
+      },
+      {
+        "name": "detailExport",
+        "type": "button",
+        "row": 2,
+        "col": 9,
+        "w": 3,
+        "h": 1,
+        "props": {
+          "text": "Exportar CSV",
+          "style": "primary"
+        },
+        "events": [
+          {
+            "on": "click",
+            "action": "trigger",
+            "target": "exportCsv"
+          }
+        ]
+      },
+      {
+        "name": "kpi1_items",
+        "type": "statistic",
+        "row": 3,
+        "col": 0,
+        "w": 2,
+        "h": 2,
+        "props": {
+          "label": "SKUs activos",
+          "primaryValue": "{{kpis.value.total_items}}",
+          "secondaryLabel": "catálogo Heineman",
+          "background": "linear-gradient(135deg,#6D28D9 0%,#8B5CF6 100%)",
+          "color": "#FFFFFF"
+        }
+      },
+      {
+        "name": "kpi2_ws1",
+        "type": "statistic",
+        "row": 3,
+        "col": 2,
+        "w": 2,
+        "h": 2,
+        "props": {
+          "label": "Con price discovery",
+          "primaryValue": "{{kpis.value.with_ws1}}",
+          "secondaryLabel": "{{Math.round(kpis.value.with_ws1*100/kpis.value.total_items)}}% del catálogo",
+          "background": "linear-gradient(135deg,#1D4ED8 0%,#3B82F6 100%)",
+          "color": "#FFFFFF"
+        }
+      },
+      {
+        "name": "kpi3_msrp",
+        "type": "statistic",
+        "row": 3,
+        "col": 4,
+        "w": 2,
+        "h": 2,
+        "props": {
+          "label": "Con MSRP comparado",
+          "primaryValue": "{{kpis.value.with_msrp}}",
+          "secondaryLabel": "{{Math.round(kpis.value.with_msrp*100/kpis.value.total_items)}}% del catálogo",
+          "background": "linear-gradient(135deg,#0E7490 0%,#06B6D4 100%)",
+          "color": "#FFFFFF"
+        }
+      },
+      {
+        "name": "kpi4_sale",
+        "type": "statistic",
+        "row": 3,
+        "col": 6,
+        "w": 2,
+        "h": 2,
+        "props": {
+          "label": "Sales en pipeline",
+          "primaryValue": "{{kpis.value.with_sale}}",
+          "secondaryLabel": "€ {{Number(kpis.value.total_sale_value_eur).toLocaleString('es-ES',{minimumFractionDigits:2})}} valor pipeline",
+          "background": "linear-gradient(135deg,#047857 0%,#10B981 100%)",
+          "color": "#FFFFFF"
+        }
+      },
+      {
+        "name": "kpi5_margin",
+        "type": "statistic",
+        "row": 3,
+        "col": 8,
+        "w": 2,
+        "h": 2,
+        "props": {
+          "label": "Margen promedio",
+          "primaryValue": "{{kpis.value.avg_margin_pct.toFixed(1)}}%",
+          "secondaryLabel": "vs precio más bajo del mercado",
+          "background": "linear-gradient(135deg,#BE185D 0%,#EC4899 100%)",
+          "color": "#FFFFFF"
+        }
+      },
+      {
+        "name": "kpi6_opp",
+        "type": "statistic",
+        "row": 3,
+        "col": 10,
+        "w": 2,
+        "h": 2,
+        "props": {
+          "label": "Oportunidad total",
+          "primaryValue": "€ {{Number(kpis.value.total_opportunity_eur).toLocaleString('es-ES',{minimumFractionDigits:2})}}",
+          "secondaryLabel": "margen acumulable",
+          "background": "linear-gradient(135deg,#B45309 0%,#F59E0B 100%)",
+          "color": "#FFFFFF"
+        }
+      },
+      {
+        "name": "funnelTable",
+        "type": "table",
+        "row": 5,
+        "col": 0,
+        "w": 7,
+        "h": 5,
+        "props": {
+          "title": "Pipeline funnel · desde catálogo a venta",
+          "data": "{{funnelRows.value}}",
+          "columns": [
+            {
+              "key": "label",
+              "label": "Etapa",
+              "format": "string",
+              "width": "30%"
+            },
+            {
+              "key": "count",
+              "label": "Items",
+              "format": "number",
+              "decimalPlaces": 0,
+              "width": "15%"
+            },
+            {
+              "key": "pct",
+              "label": "%",
+              "format": "number",
+              "decimalPlaces": 1,
+              "suffix": "%",
+              "width": "15%"
+            },
+            {
+              "key": "_bar",
+              "label": "Progreso",
+              "format": "progressBar",
+              "width": "40%",
+              "valueExpr": "{{currentRow.pct}}",
+              "barColorExpr": "{{ ({violet:'#8B5CF6',blue:'#3B82F6',cyan:'#06B6D4',pink:'#EC4899',green:'#10B981',amber:'#F59E0B'})[currentRow.palette] || '#8B5CF6' }}"
+            }
+          ]
+        }
+      },
+      {
+        "name": "categoryTable",
+        "type": "table",
+        "row": 5,
+        "col": 7,
+        "w": 5,
+        "h": 5,
+        "props": {
+          "title": "Top categorías",
+          "data": "{{categoryRows.value}}",
+          "columns": [
+            {
+              "key": "name",
+              "label": "Categoría",
+              "format": "tag",
+              "tagColor": "pink"
+            },
+            {
+              "key": "count",
+              "label": "Items",
+              "format": "number",
+              "decimalPlaces": 0
+            }
+          ]
+        },
+        "events": [
+          {
+            "on": "rowClick",
+            "action": "setValue",
+            "target": "detailCategory",
+            "valueExpr": "{{currentRow.name}}"
+          },
+          {
+            "on": "rowClick",
+            "action": "trigger",
+            "target": "detailRows"
+          }
+        ]
+      },
+      {
+        "name": "detailTable",
+        "type": "table",
+        "row": 10,
+        "col": 0,
+        "w": 12,
+        "h": 13,
+        "props": {
+          "title": "Detail rows · todas las fuentes consolidadas",
+          "subtitle": "{{detailRows.value.length}} filas · ordenadas por {{detailParam.value}}",
+          "data": "{{detailRows.value}}",
+          "rowHeight": "compact",
+          "stickyHeader": true,
+          "paginationType": "virtual",
+          "columnGroups": [
+            {
+              "label": "ITEM",
+              "background": "linear-gradient(90deg,#6D28D9,#8B5CF6)",
+              "columns": [
+                "barcode",
+                "name",
+                "brand",
+                "category"
+              ]
+            },
+            {
+              "label": "OFFERS WE HAVE",
+              "background": "linear-gradient(90deg,#1D4ED8,#3B82F6)",
+              "columns": [
+                "sku",
+                "cost",
+                "offer_date"
+              ]
+            },
+            {
+              "label": "SALES / NEED",
+              "background": "linear-gradient(90deg,#047857,#10B981)",
+              "columns": [
+                "order_id",
+                "sale_price",
+                "sale_date",
+                "sale_qty"
+              ]
+            },
+            {
+              "label": "WHOLESALE 1",
+              "background": "linear-gradient(90deg,#0E7490,#06B6D4)",
+              "columns": [
+                "ws1_price",
+                "ws1_company"
+              ]
+            },
+            {
+              "label": "WHOLESALE 2",
+              "background": "linear-gradient(90deg,#155E75,#0891B2)",
+              "columns": [
+                "ws2_price",
+                "ws2_company"
+              ]
+            },
+            {
+              "label": "TRADER",
+              "background": "linear-gradient(90deg,#B45309,#F59E0B)",
+              "columns": [
+                "trader_price"
+              ]
+            },
+            {
+              "label": "MSRP",
+              "background": "linear-gradient(90deg,#BE185D,#EC4899)",
+              "columns": [
+                "msrp",
+                "msrp2",
+                "margin_pct"
+              ]
+            }
+          ],
+          "columns": [
+            {
+              "key": "barcode",
+              "label": "Barcode",
+              "format": "string",
+              "monospace": true,
+              "linkUrl": "#catalog?barcode={{currentRow.barcode}}"
+            },
+            {
+              "key": "name",
+              "label": "Item",
+              "format": "string",
+              "linkUrl": "#catalog?barcode={{currentRow.barcode}}"
+            },
+            {
+              "key": "brand",
+              "label": "Brand",
+              "format": "string"
+            },
+            {
+              "key": "category",
+              "label": "Categoría",
+              "format": "tag",
+              "tagColor": "violet"
+            },
+            {
+              "key": "sku",
+              "label": "SKU Heineman",
+              "format": "string",
+              "monospace": true
+            },
+            {
+              "key": "cost",
+              "label": "Cost",
+              "format": "currency",
+              "currency": "EUR",
+              "decimalPlaces": 2,
+              "conditionalFormatting": [
+                {
+                  "if": "{{currentRow.heat_cost}} === 1",
+                  "bg": "#0F4031",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_cost}} === 2",
+                  "bg": "#136D45",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_cost}} === 3",
+                  "bg": "#178757",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_cost}} === 4",
+                  "bg": "#1AA66B",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_cost}} === 5",
+                  "bg": "#22C55E",
+                  "text": "#FFFFFF"
+                }
+              ]
+            },
+            {
+              "key": "offer_date",
+              "label": "Offer Date",
+              "format": "date",
+              "linkUrl": "#ofertas?offer_id={{currentRow.offer_id}}"
+            },
+            {
+              "key": "order_id",
+              "label": "Order ID",
+              "format": "string",
+              "monospace": true,
+              "linkUrl": "#leads?order_id={{currentRow.order_id}}"
+            },
+            {
+              "key": "sale_price",
+              "label": "Sale Price",
+              "format": "currency",
+              "currency": "EUR",
+              "decimalPlaces": 2,
+              "conditionalFormatting": [
+                {
+                  "if": "{{currentRow.heat_sale_price}} === 1",
+                  "bg": "#0F4031",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_sale_price}} === 2",
+                  "bg": "#136D45",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_sale_price}} === 3",
+                  "bg": "#178757",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_sale_price}} === 4",
+                  "bg": "#1AA66B",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_sale_price}} === 5",
+                  "bg": "#22C55E",
+                  "text": "#FFFFFF"
+                }
+              ]
+            },
+            {
+              "key": "sale_date",
+              "label": "Sale Date",
+              "format": "date"
+            },
+            {
+              "key": "sale_qty",
+              "label": "Qty",
+              "format": "number",
+              "decimalPlaces": 0,
+              "conditionalFormatting": [
+                {
+                  "if": "{{currentRow.heat_sale_qty}} === 1",
+                  "bg": "#0F4031",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_sale_qty}} === 2",
+                  "bg": "#136D45",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_sale_qty}} === 3",
+                  "bg": "#178757",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_sale_qty}} === 4",
+                  "bg": "#1AA66B",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_sale_qty}} === 5",
+                  "bg": "#22C55E",
+                  "text": "#FFFFFF"
+                }
+              ]
+            },
+            {
+              "key": "ws1_price",
+              "label": "WS1 Price",
+              "format": "currency",
+              "currency": "EUR",
+              "decimalPlaces": 2,
+              "conditionalFormatting": [
+                {
+                  "if": "{{currentRow.heat_ws1}} === 1",
+                  "bg": "#172554",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_ws1}} === 2",
+                  "bg": "#1E3A8A",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_ws1}} === 3",
+                  "bg": "#2563EB",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_ws1}} === 4",
+                  "bg": "#3B82F6",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_ws1}} === 5",
+                  "bg": "#60A5FA",
+                  "text": "#FFFFFF"
+                }
+              ]
+            },
+            {
+              "key": "ws1_company",
+              "label": "WS1 Company",
+              "format": "string",
+              "linkUrl": "#listas?company={{currentRow.ws1_company}}"
+            },
+            {
+              "key": "ws2_price",
+              "label": "WS2 Price",
+              "format": "currency",
+              "currency": "EUR",
+              "decimalPlaces": 2,
+              "conditionalFormatting": [
+                {
+                  "if": "{{currentRow.heat_ws2}} === 1",
+                  "bg": "#0E3A4A",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_ws2}} === 2",
+                  "bg": "#0F4D5C",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_ws2}} === 3",
+                  "bg": "#0E7490",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_ws2}} === 4",
+                  "bg": "#0891B2",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_ws2}} === 5",
+                  "bg": "#06B6D4",
+                  "text": "#FFFFFF"
+                }
+              ]
+            },
+            {
+              "key": "ws2_company",
+              "label": "WS2 Company",
+              "format": "string",
+              "linkUrl": "#listas?company={{currentRow.ws2_company}}"
+            },
+            {
+              "key": "trader_price",
+              "label": "Trader Price",
+              "format": "currency",
+              "currency": "EUR",
+              "decimalPlaces": 2,
+              "conditionalFormatting": [
+                {
+                  "if": "{{currentRow.heat_trader}} === 1",
+                  "bg": "#451A03",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_trader}} === 2",
+                  "bg": "#78350F",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_trader}} === 3",
+                  "bg": "#B45309",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_trader}} === 4",
+                  "bg": "#D97706",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_trader}} === 5",
+                  "bg": "#F59E0B",
+                  "text": "#FFFFFF"
+                }
+              ]
+            },
+            {
+              "key": "msrp",
+              "label": "MSRP",
+              "format": "currency",
+              "currency": "EUR",
+              "decimalPlaces": 2,
+              "linkUrl": "https://www.amazon.com/s?k={{encodeURIComponent(currentRow.brand+' '+currentRow.name)}}",
+              "linkTarget": "_blank",
+              "conditionalFormatting": [
+                {
+                  "if": "{{currentRow.heat_msrp}} === 1",
+                  "bg": "#500724",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_msrp}} === 2",
+                  "bg": "#831843",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_msrp}} === 3",
+                  "bg": "#BE185D",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_msrp}} === 4",
+                  "bg": "#DB2777",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_msrp}} === 5",
+                  "bg": "#EC4899",
+                  "text": "#FFFFFF"
+                }
+              ]
+            },
+            {
+              "key": "msrp2",
+              "label": "MSRP 2",
+              "format": "currency",
+              "currency": "EUR",
+              "decimalPlaces": 2,
+              "linkUrl": "https://www.amazon.com/s?k={{encodeURIComponent(currentRow.brand+' '+currentRow.name)}}",
+              "linkTarget": "_blank",
+              "conditionalFormatting": [
+                {
+                  "if": "{{currentRow.heat_msrp2}} === 1",
+                  "bg": "#500724",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_msrp2}} === 2",
+                  "bg": "#831843",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_msrp2}} === 3",
+                  "bg": "#BE185D",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_msrp2}} === 4",
+                  "bg": "#DB2777",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_msrp2}} === 5",
+                  "bg": "#EC4899",
+                  "text": "#FFFFFF"
+                }
+              ]
+            },
+            {
+              "key": "margin_pct",
+              "label": "Margen %",
+              "format": "number",
+              "decimalPlaces": 1,
+              "suffix": "%",
+              "conditionalFormatting": [
+                {
+                  "if": "{{currentRow.heat_margin}} === 1",
+                  "bg": "#2E1065",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_margin}} === 2",
+                  "bg": "#4C1D95",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_margin}} === 3",
+                  "bg": "#6D28D9",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_margin}} === 4",
+                  "bg": "#7C3AED",
+                  "text": "#FFFFFF"
+                },
+                {
+                  "if": "{{currentRow.heat_margin}} === 5",
+                  "bg": "#8B5CF6",
+                  "text": "#FFFFFF"
+                }
+              ]
+            }
+          ],
+          "rowActions": [
+            {
+              "label": "Abrir en HubSpot",
+              "icon": "ExternalLink",
+              "url": "https://app.hubspot.com/contacts/148358528/objects/0-1/views/all/list?searchString={{currentRow.brand}}",
+              "target": "_blank"
+            },
+            {
+              "label": "Buscar en Slack",
+              "icon": "MessageCircle",
+              "url": "https://app.slack.com/client/T0B05EVQ19A/C0B08DKCUBU?query={{currentRow.barcode}}",
+              "target": "_blank"
+            },
+            {
+              "label": "MSRP en Amazon",
+              "icon": "Search",
+              "url": "https://www.amazon.com/s?k={{encodeURIComponent(currentRow.brand+' '+currentRow.name)}}",
+              "target": "_blank"
+            }
+          ],
+          "emptyState": "No hay filas con esos filtros. Probá quitar la categoría o cambiar el parámetro de orden."
+        }
+      }
+    ],
+    "events": [
+      {
+        "on": "app.pageLoad",
+        "actions": [
+          "detailRaw.trigger",
+          "detailData.trigger",
+          "detailRows.trigger",
+          "kpis.trigger",
+          "funnelRows.trigger",
+          "categoryRows.trigger",
+          "categoryOptions.trigger"
+        ]
+      },
+      {
+        "on": "detailParam.change",
+        "actions": [
+          "detailRows.trigger"
+        ]
+      },
+      {
+        "on": "detailCategory.change",
+        "actions": [
+          "detailRows.trigger"
+        ]
+      },
+      {
+        "on": "detailSearch.change",
+        "actions": [
+          "detailRows.trigger"
+        ],
+        "debounce": 250
+      },
+      {
+        "on": "detailExport.click",
+        "actions": [
+          "exportCsv.trigger"
+        ]
+      }
+    ],
+    "responsive": {
+      "mobileBreakpoint": 8,
+      "rules": [
+        {
+          "match": "kpi*",
+          "mobile": {
+            "w": 4
+          }
+        },
+        {
+          "match": "funnelTable",
+          "mobile": {
+            "w": 12,
+            "row": 5
+          }
+        },
+        {
+          "match": "categoryTable",
+          "mobile": {
+            "w": 12,
+            "row": 10
+          }
+        }
+      ]
+    },
+    "constraints": {
+      "i18n": "es-ES",
+      "noEmojis": true,
+      "noExclamationPoints": true,
+      "currency": "EUR",
+      "dateFormat": "YYYY-MM-DD"
+    }
+  },
+  "constraints": {
+    "i18n": "es-ES",
+    "currency": "EUR",
+    "dateFormat": "YYYY-MM-DD",
+    "noEmojis": true,
+    "noExclamationPoints": true,
+    "darkMode": true
+  }
+}

@@ -98,6 +98,22 @@
       Workflows n8n
     </a>
 
+    <div class="nav-section">Growth</div>
+    <a href="#campaigns" class="nav-item" data-view="campaigns">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      Campaigns
+      <span class="badge badge-beta">beta</span>
+    </a>
+    <a href="#cruces" class="nav-item" data-view="cruces">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      Cruces oferta + wish
+      <span class="badge">22</span>
+    </a>
+    <a href="#consultas" class="nav-item" data-view="consultas">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      Consultas ad-hoc
+    </a>
+
     <div class="nav-section">Integraciones</div>
     <a href="https://app.hubspot.com/contacts/148358528/" target="_blank" rel="noopener" class="nav-item nav-ext">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 18h6M18 9v6"/></svg>
@@ -116,6 +132,13 @@
     </a>
   </nav>
 
+  <div class="sidebar-foot">
+    <button class="theme-toggle" id="themeToggle" title="Cambiar tema">
+      <svg id="themeIconDark" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      <svg id="themeIconLight" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      <span id="themeLabel">Modo claro</span>
+    </button>
+  </div>
   <div class="user-card">
     <div class="avatar">A</div>
     <div>
@@ -623,6 +646,190 @@
           </thead>
           <tbody id="detailTbody"></tbody>
         </table>
+      </div>
+    </div>
+    </div><!-- /detail-main -->
+
+    <!-- Period rail derecho -->
+    <aside class="period-rail">
+      <div class="rail-section">
+        <div class="rail-head">
+          <span class="rail-title">Período</span>
+          <button class="rail-clear" id="railClearPeriod">Limpiar</button>
+        </div>
+        <label class="rail-check"><input type="checkbox" data-period="2025-11"><span>Noviembre 2025</span></label>
+        <label class="rail-check"><input type="checkbox" data-period="2025-12"><span>Diciembre 2025</span></label>
+        <label class="rail-check"><input type="checkbox" data-period="2026-01" checked><span>Enero 2026</span></label>
+        <label class="rail-check"><input type="checkbox" data-period="2026-02" checked><span>Febrero 2026</span></label>
+        <label class="rail-check"><input type="checkbox" data-period="2026-03" checked><span>Marzo 2026</span></label>
+        <label class="rail-check"><input type="checkbox" data-period="2026-04" checked><span>Abril 2026</span></label>
+      </div>
+      <div class="rail-section">
+        <div class="rail-head"><span class="rail-title">Fuente de oferta</span></div>
+        <label class="rail-check"><input type="checkbox" data-source="hub" checked><span>Hub Offers</span></label>
+        <label class="rail-check"><input type="checkbox" data-source="ws1" checked><span>Wholesale 1</span></label>
+        <label class="rail-check"><input type="checkbox" data-source="ws2" checked><span>Wholesale 2</span></label>
+        <label class="rail-check"><input type="checkbox" data-source="trader"><span>Trader pool</span></label>
+      </div>
+      <div class="rail-section">
+        <div class="rail-head"><span class="rail-title">Estado</span></div>
+        <label class="rail-check"><input type="checkbox" data-state="cheaper" checked><span>Donde somos más baratos</span></label>
+        <label class="rail-check"><input type="checkbox" data-state="no_disc"><span>Sin price discovery</span></label>
+        <label class="rail-check"><input type="checkbox" data-state="with_sale"><span>Con sale activa</span></label>
+      </div>
+    </aside>
+    </div><!-- /detail-layout -->
+  </section>
+
+  <!-- ========== CRUCES OFERTA + WISH ========== -->
+  <section class="view" id="view-cruces">
+    <div class="page-head">
+      <div>
+        <h1>Cruces oferta + wish</h1>
+        <p class="subtle">Productos con oferta activa que coinciden con wishes registradas en HubSpot</p>
+      </div>
+      <div class="filters">
+        <select id="crucesProvider">
+          <option value="">Todos los proveedores</option>
+        </select>
+        <button class="btn-ghost" id="crucesExport">Exportar cruces</button>
+      </div>
+    </div>
+    <div class="hero-kpi-grid hero-kpi-3">
+      <div class="hero-kpi g-cyan">
+        <div class="hk-label">Matches potenciales</div>
+        <div class="hk-value" id="crucesKpiTotal">22</div>
+        <div class="hk-foot">oferta + wish del mismo SKU</div>
+      </div>
+      <div class="hero-kpi g-blue">
+        <div class="hk-label">Top proveedores</div>
+        <div class="hk-value" id="crucesKpiProviders">4</div>
+        <div class="hk-foot">con mayor número de ofertas activas</div>
+      </div>
+      <div class="hero-kpi g-violet">
+        <div class="hk-label">Marcas con wish</div>
+        <div class="hk-value" id="crucesKpiBrands">10</div>
+        <div class="hk-foot">categorías más demandadas</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-head">
+        <h3>Cruces oferta + wish</h3>
+        <span class="subtle">ordenados por número de ofertas</span>
+      </div>
+      <div class="table-wrap">
+        <table class="clean-table">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Marca</th>
+              <th class="num">Mejor oferta</th>
+              <th class="num">MSRP</th>
+              <th class="num">Margen</th>
+              <th class="num"># ofertas</th>
+              <th class="num"># wishes</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="crucesBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONSULTAS AD-HOC ========== -->
+  <section class="view" id="view-consultas">
+    <div class="page-head">
+      <div>
+        <h1>Consultas ad-hoc</h1>
+        <p class="subtle">Búsqueda libre por código de barras, marca, producto o categoría</p>
+      </div>
+    </div>
+    <div class="card consultas-card">
+      <div class="consultas-search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input id="consultaInput" type="text" placeholder="Escribe código de barras, marca, producto o categoría">
+        <button class="btn-primary" id="consultaRun">Consultar</button>
+      </div>
+      <div class="consultas-chips">
+        <span class="chip-label">Ejemplos:</span>
+        <button class="chip" data-q="Penhaligons">Penhaligons</button>
+        <button class="chip" data-q="Liquor">Liquor</button>
+        <button class="chip" data-q="Xerjoff">Xerjoff</button>
+        <button class="chip" data-q="Spirits">Spirits</button>
+        <button class="chip" data-q="Tom Ford">Tom Ford</button>
+      </div>
+    </div>
+    <div class="card" id="consultaResultCard">
+      <div class="section-head">
+        <h3 id="consultaResultTitle">Sin consulta activa</h3>
+        <span class="subtle" id="consultaResultMeta">Escribe un término o seleccioná un ejemplo para empezar</span>
+      </div>
+      <div id="consultaResultBody" class="consulta-empty">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <p>Sin consulta activa</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CAMPAIGNS ========== -->
+  <section class="view" id="view-campaigns">
+    <div class="page-head">
+      <div>
+        <h1>Campaigns</h1>
+        <p class="subtle">Planificación de outreach, scrapeo y búsqueda de contactos · espacio en construcción</p>
+      </div>
+      <div class="filters">
+        <button class="btn-primary" id="newCampaign">+ Nueva campaña</button>
+      </div>
+    </div>
+    <div class="camp-tabs" id="campTabs">
+      <button class="camp-tab active" data-tab="all">Todas</button>
+      <button class="camp-tab" data-tab="outreach">Outreach</button>
+      <button class="camp-tab" data-tab="scraping">Scraping</button>
+      <button class="camp-tab" data-tab="contacts">Búsqueda de contactos</button>
+    </div>
+    <div class="hero-kpi-grid hero-kpi-4">
+      <div class="hero-kpi g-violet">
+        <div class="hk-label">Campañas activas</div>
+        <div class="hk-value">3</div>
+        <div class="hk-foot">de 5 totales</div>
+      </div>
+      <div class="hero-kpi g-blue">
+        <div class="hk-label">Contactos cargados</div>
+        <div class="hk-value">2.135</div>
+        <div class="hk-foot">en el último mes</div>
+      </div>
+      <div class="hero-kpi g-cyan">
+        <div class="hk-label">Tasa de respuesta</div>
+        <div class="hk-value">7,4%</div>
+        <div class="hk-foot">promedio ponderado</div>
+      </div>
+      <div class="hero-kpi g-green">
+        <div class="hk-label">Reuniones agendadas</div>
+        <div class="hk-value">31</div>
+        <div class="hk-foot">trimestre actual</div>
+      </div>
+    </div>
+    <div class="camp-grid" id="campGrid"></div>
+    <div class="card camp-roadmap">
+      <div class="section-head">
+        <h3>Próximamente</h3>
+        <span class="subtle">roadmap de la sección</span>
+      </div>
+      <div class="camp-roadmap-grid">
+        <div class="camp-road-item">
+          <h4>Editor de campañas</h4>
+          <p>Plantillas de email, LinkedIn y WhatsApp · personalización por variables · A/B testing</p>
+        </div>
+        <div class="camp-road-item">
+          <h4>Scraping configurable</h4>
+          <p>Selección de fuentes (Google Maps, LinkedIn, directorios sectoriales) · cron jobs · output a HubSpot</p>
+        </div>
+        <div class="camp-road-item">
+          <h4>Pipeline de contactos</h4>
+          <p>Búsqueda guiada por país, categoría y tipo de empresa · enrichment automático · scoring</p>
+        </div>
       </div>
     </div>
   </section>

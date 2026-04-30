@@ -1,0 +1,973 @@
+{
+  "version": 4,
+  "schema": "retool-app",
+  "data": {
+    "uuid": "63cd8bab-3c42-434b-8f38-f6542c51943d",
+    "exportedAt": "2026-04-28T18:25:14.000Z",
+    "exportedBy": "BAST Dashboard v5",
+    "retoolFormatVersion": 4,
+    "schema": "retool-app-export",
+    "appName": "BAST · Detail Intelligence",
+    "appDescription": "Detail Intelligence dashboard · 6 fuentes consolidadas (catálogo · ofertas · sales · ws1 · ws2 · trader · MSRP) · heatmap por columna · linkeable al origen.",
+    "page": {
+      "id": "4c47d4dbe513",
+      "name": "Detail Intelligence",
+      "isHomePage": true,
+      "layout": "default",
+      "queryParams": [],
+      "appBackgroundColor": "#0B0F19"
+    },
+    "queries": [
+      {
+        "id": "924bb3b49891",
+        "name": "detailData",
+        "type": "JSQuery",
+        "transformer": "return {\"rows\": [{\"idx\": 0, \"barcode\": \"5491b0b13a610\", \"name\": \"Hennessy Paradis 40% 0.7L GP\", \"brand\": \"Hennessy\", \"category\": \"Cognac\", \"size\": \"0.7 l\", \"sku\": \"HEI-10000\", \"cost\": 617.12, \"offer_date\": \"2026-04-17\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026000\", \"sale_price\": 773.55, \"sale_date\": \"2026-04-13\", \"sale_qty\": 24, \"ws1_price\": 1755.98, \"ws1_company\": \"Pesco Supply\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 1465.52, \"msrp\": 6060.86, \"msrp2\": null, \"min_market\": 1465.52, \"max_market\": 6060.86, \"we_cheaper\": true, \"margin_pct\": 57.9, \"margin_eur\": 848.4}, {\"idx\": 1, \"barcode\": \"540b67762ecc8\", \"name\": \"Glenfid 30y 43% 0.7L GP\", \"brand\": \"Glenfiddich\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10007\", \"cost\": 547.07, \"offer_date\": \"2026-04-16\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026003\", \"sale_price\": 666.38, \"sale_date\": \"2026-04-14\", \"sale_qty\": 120, \"ws1_price\": 5501.44, \"ws1_company\": \"Pesco Supply\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 2018.94, \"msrp\": 3151.56, \"msrp2\": null, \"min_market\": 2018.94, \"max_market\": 5501.44, \"we_cheaper\": true, \"margin_pct\": 72.9, \"margin_eur\": 1471.87}, {\"idx\": 2, \"barcode\": \"547d92bef18ec\", \"name\": \"Hennessy XXO 40% 1L\", \"brand\": \"Hennessy\", \"category\": \"Cognac\", \"size\": \"1.0 l\", \"sku\": \"HEI-10014\", \"cost\": 239.69, \"offer_date\": \"2026-04-26\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026006\", \"sale_price\": 272.63, \"sale_date\": \"2026-03-05\", \"sale_qty\": 60, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 3288.0, \"msrp2\": 2042.26, \"min_market\": 2042.26, \"max_market\": 3288.0, \"we_cheaper\": true, \"margin_pct\": 88.3, \"margin_eur\": 1802.57}, {\"idx\": 3, \"barcode\": \"54276e58cd401\", \"name\": \"Lancô Absolue LF258300 SER\", \"brand\": \"Lancôme\", \"category\": \"SC / Face\", \"size\": \"30.0 ml\", \"sku\": \"HEI-10021\", \"cost\": 221.09, \"offer_date\": \"2026-04-14\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026009\", \"sale_price\": 282.86, \"sale_date\": \"2026-04-05\", \"sale_qty\": 240, \"ws1_price\": 554.82, \"ws1_company\": \"North and South Wholesalers\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": null, \"msrp2\": null, \"min_market\": 554.82, \"max_market\": 554.82, \"we_cheaper\": true, \"margin_pct\": 60.2, \"margin_eur\": 333.73}, {\"idx\": 4, \"barcode\": \"54b8547d9a478\", \"name\": \"Kweich Moutai LLC 53%0.375L GP\", \"brand\": \"Kweichow Moutai\", \"category\": \"Clear Spirits w Add\", \"size\": \"0.375 l\", \"sku\": \"HEI-10028\", \"cost\": 218.22, \"offer_date\": \"2026-04-21\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026012\", \"sale_price\": 269.38, \"sale_date\": \"2026-04-05\", \"sale_qty\": 24, \"ws1_price\": 859.13, \"ws1_company\": \"Indu World International\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 2218.7, \"msrp2\": 1188.89, \"min_market\": 859.13, \"max_market\": 2218.7, \"we_cheaper\": true, \"margin_pct\": 74.6, \"margin_eur\": 640.91}, {\"idx\": 5, \"barcode\": \"5464ce2bc76c2\", \"name\": \"Kweich LCCDufu 53% 0.375L+2gl\", \"brand\": \"Kweichow Moutai\", \"category\": \"Clear Spirits w Add\", \"size\": \"0.375 l\", \"sku\": \"HEI-10035\", \"cost\": 218.22, \"offer_date\": \"2026-04-20\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026015\", \"sale_price\": 283.27, \"sale_date\": \"2026-03-19\", \"sale_qty\": 600, \"ws1_price\": 1916.64, \"ws1_company\": \"Pesco Supply\", \"ws2_price\": 372.86, \"ws2_company\": \"Cosmeticos de Konga\", \"trader_price\": null, \"msrp\": 2856.05, \"msrp2\": null, \"min_market\": 372.86, \"max_market\": 2856.05, \"we_cheaper\": true, \"margin_pct\": 41.5, \"margin_eur\": 154.64}, {\"idx\": 6, \"barcode\": \"54d0f86ec2fd5\", \"name\": \"Courvoisier Extra 40% 0.7L GP\", \"brand\": \"Courvoisier\", \"category\": \"Cognac\", \"size\": \"0.7 l\", \"sku\": \"HEI-10042\", \"cost\": 200.09, \"offer_date\": \"2026-04-16\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026018\", \"sale_price\": 247.71, \"sale_date\": \"2026-04-03\", \"sale_qty\": 600, \"ws1_price\": 900.76, \"ws1_company\": \"North and South Wholesalers\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": null, \"msrp2\": 1767.86, \"min_market\": 900.76, \"max_market\": 1767.86, \"we_cheaper\": true, \"margin_pct\": 77.8, \"margin_eur\": 700.67}, {\"idx\": 7, \"barcode\": \"5441757c183cf\", \"name\": \"Glenlivet XXV 43% 0.7L\", \"brand\": \"The Glenlivet\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10049\", \"cost\": 199.38, \"offer_date\": \"2026-04-22\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026021\", \"sale_price\": 259.11, \"sale_date\": \"2026-03-27\", \"sale_qty\": 120, \"ws1_price\": 454.7, \"ws1_company\": \"Pesco Supply\", \"ws2_price\": 506.4, \"ws2_company\": \"Bayblue\", \"trader_price\": null, \"msrp\": 1496.75, \"msrp2\": null, \"min_market\": 454.7, \"max_market\": 1496.75, \"we_cheaper\": true, \"margin_pct\": 56.2, \"margin_eur\": 255.32}, {\"idx\": 8, \"barcode\": \"54fc104f6f7c4\", \"name\": \"Macall Rare Cask Bl 48% 0.7L\", \"brand\": \"Macallan\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10056\", \"cost\": 197.74, \"offer_date\": \"2026-04-19\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026024\", \"sale_price\": 241.16, \"sale_date\": \"2026-02-27\", \"sale_qty\": 12, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": 1433.84, \"ws2_company\": \"Universal Perfumes & Cosmetics Inc.\", \"trader_price\": 902.46, \"msrp\": 1594.78, \"msrp2\": 2479.3, \"min_market\": 902.46, \"max_market\": 2479.3, \"we_cheaper\": true, \"margin_pct\": 78.1, \"margin_eur\": 704.72}, {\"idx\": 9, \"barcode\": \"547cca678a2ab\", \"name\": \"Lancô Absolue TM765800 SET\", \"brand\": \"Lancôme\", \"category\": \"SC / Sets\", \"size\": \"1.0 piece(s)\", \"sku\": \"HEI-10063\", \"cost\": 189.28, \"offer_date\": \"2026-04-16\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026027\", \"sale_price\": 229.05, \"sale_date\": \"2026-04-17\", \"sale_qty\": 240, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 862.32, \"msrp\": 966.24, \"msrp2\": null, \"min_market\": 862.32, \"max_market\": 966.24, \"we_cheaper\": true, \"margin_pct\": 78.0, \"margin_eur\": 673.04}, {\"idx\": 10, \"barcode\": \"54737e893c825\", \"name\": \"Joh. Walker Blue Xord 40% 1L\", \"brand\": \"Johnnie Walker\", \"category\": \"Whisk(e)y\", \"size\": \"1.0 l\", \"sku\": \"HEI-10070\", \"cost\": 183.79, \"offer_date\": \"2026-04-19\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 859.15, \"msrp2\": 2362.29, \"min_market\": 859.15, \"max_market\": 2362.29, \"we_cheaper\": true, \"margin_pct\": 78.6, \"margin_eur\": 675.36}, {\"idx\": 11, \"barcode\": \"54c78cc3ea691\", \"name\": \"Joh.Walk Blue L. 40% 1L GP\", \"brand\": \"Johnnie Walker\", \"category\": \"Whisk(e)y\", \"size\": \"1.0 l\", \"sku\": \"HEI-10077\", \"cost\": 167.08, \"offer_date\": \"2026-04-15\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026033\", \"sale_price\": 188.87, \"sale_date\": \"2026-03-03\", \"sale_qty\": 240, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": 778.42, \"ws2_company\": \"North and South Wholesalers\", \"trader_price\": null, \"msrp\": 805.41, \"msrp2\": null, \"min_market\": 778.42, \"max_market\": 805.41, \"we_cheaper\": true, \"margin_pct\": 78.5, \"margin_eur\": 611.34}, {\"idx\": 12, \"barcode\": \"549115ac927e0\", \"name\": \"Old Pulteney 25y 46% 0.7L GP\", \"brand\": \"Old Pulteney\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10084\", \"cost\": 164.55, \"offer_date\": \"2026-04-19\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026036\", \"sale_price\": 199.93, \"sale_date\": \"2026-03-21\", \"sale_qty\": 120, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 1807.74, \"msrp2\": 1598.91, \"min_market\": 1598.91, \"max_market\": 1807.74, \"we_cheaper\": true, \"margin_pct\": 89.7, \"margin_eur\": 1434.36}, {\"idx\": 13, \"barcode\": \"540e769fe6937\", \"name\": \"Delamain XXO Decanter 40% 0.7L GP\", \"brand\": \"Delamain\", \"category\": \"Cognac\", \"size\": \"0.7 l\", \"sku\": \"HEI-10091\", \"cost\": 158.03, \"offer_date\": \"2026-04-22\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026039\", \"sale_price\": 191.72, \"sale_date\": \"2026-04-21\", \"sale_qty\": 24, \"ws1_price\": 829.42, \"ws1_company\": \"North and South Wholesalers\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 763.5, \"msrp\": 664.94, \"msrp2\": 996.27, \"min_market\": 664.94, \"max_market\": 996.27, \"we_cheaper\": true, \"margin_pct\": 76.2, \"margin_eur\": 506.91}, {\"idx\": 14, \"barcode\": \"541e7774f34f6\", \"name\": \"Lancô Genifique TM758500 SET\", \"brand\": \"Lancôme\", \"category\": \"SC / Sets\", \"size\": \"1.0 piece(s)\", \"sku\": \"HEI-10098\", \"cost\": 147.39, \"offer_date\": \"2026-04-19\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026042\", \"sale_price\": 182.82, \"sale_date\": \"2026-04-15\", \"sale_qty\": 240, \"ws1_price\": 1671.73, \"ws1_company\": \"jayden-martin@outlook.com\", \"ws2_price\": 674.21, \"ws2_company\": \"Cosper Distribution Inc\", \"trader_price\": 351.93, \"msrp\": 1171.39, \"msrp2\": 1516.75, \"min_market\": 351.93, \"max_market\": 1671.73, \"we_cheaper\": true, \"margin_pct\": 58.1, \"margin_eur\": 204.54}, {\"idx\": 15, \"barcode\": \"5498448200806\", \"name\": \"Remy M XO 40% 1.5L GP\", \"brand\": \"Rémy Martin\", \"category\": \"Cognac\", \"size\": \"1.5 l\", \"sku\": \"HEI-10105\", \"cost\": 146.82, \"offer_date\": \"2026-04-17\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": 915.19, \"ws2_company\": \"Universal Perfumes & Cosmetics Inc.\", \"trader_price\": null, \"msrp\": 807.1, \"msrp2\": 1059.87, \"min_market\": 807.1, \"max_market\": 1059.87, \"we_cheaper\": true, \"margin_pct\": 81.8, \"margin_eur\": 660.28}, {\"idx\": 16, \"barcode\": \"54431d402e209\", \"name\": \"Dom Pérignon 0.75L GP\", \"brand\": \"Dom Pérignon\", \"category\": \"Champagne\", \"size\": \"0.75 l\", \"sku\": \"HEI-10112\", \"cost\": 146.63, \"offer_date\": \"2026-04-23\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026048\", \"sale_price\": 187.31, \"sale_date\": \"2026-04-24\", \"sale_qty\": 120, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 675.76, \"msrp\": 535.93, \"msrp2\": 1544.84, \"min_market\": 535.93, \"max_market\": 1544.84, \"we_cheaper\": true, \"margin_pct\": 72.6, \"margin_eur\": 389.3}, {\"idx\": 17, \"barcode\": \"541a96919df6a\", \"name\": \"Ballantine's 30y 40% 0.7L\", \"brand\": \"Ballantine's\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10119\", \"cost\": 142.66, \"offer_date\": \"2026-04-24\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026051\", \"sale_price\": 172.25, \"sale_date\": \"2026-04-15\", \"sale_qty\": 1200, \"ws1_price\": 342.11, \"ws1_company\": \"jayden-martin@outlook.com\", \"ws2_price\": 576.02, \"ws2_company\": \"J TRADE & DISTRIBUTION SP ZOO\", \"trader_price\": 682.82, \"msrp\": null, \"msrp2\": null, \"min_market\": 342.11, \"max_market\": 682.82, \"we_cheaper\": true, \"margin_pct\": 58.3, \"margin_eur\": 199.45}, {\"idx\": 18, \"barcode\": \"541b9d0fa21ab\", \"name\": \"Glenfid Grand Cru 43% 0.7L GP\", \"brand\": \"Glenfiddich\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10126\", \"cost\": 138.73, \"offer_date\": \"2026-04-17\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": 669.57, \"ws1_company\": \"Pesco Supply\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": null, \"msrp2\": 1226.62, \"min_market\": 669.57, \"max_market\": 1226.62, \"we_cheaper\": true, \"margin_pct\": 79.3, \"margin_eur\": 530.84}, {\"idx\": 19, \"barcode\": \"54b6848cae84d\", \"name\": \"Balv 18y Sherry 48.7% 0.7L Tub\", \"brand\": \"Balvenie\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10133\", \"cost\": 133.4, \"offer_date\": \"2026-04-19\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": 317.51, \"ws1_company\": \"Pesco Supply\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 303.06, \"msrp\": null, \"msrp2\": 1656.29, \"min_market\": 303.06, \"max_market\": 1656.29, \"we_cheaper\": true, \"margin_pct\": 56.0, \"margin_eur\": 169.66}, {\"idx\": 20, \"barcode\": \"54d39503f1cdb\", \"name\": \"Lancô Absolue LC622200 SER\", \"brand\": \"Lancôme\", \"category\": \"SC / Face\", \"size\": \"30.0 ml\", \"sku\": \"HEI-10140\", \"cost\": 133.13, \"offer_date\": \"2026-04-18\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026060\", \"sale_price\": 163.35, \"sale_date\": \"2026-03-20\", \"sale_qty\": 12, \"ws1_price\": 1032.22, \"ws1_company\": \"Indu World International\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 647.65, \"msrp\": 1019.21, \"msrp2\": null, \"min_market\": 647.65, \"max_market\": 1032.22, \"we_cheaper\": true, \"margin_pct\": 79.4, \"margin_eur\": 514.52}, {\"idx\": 21, \"barcode\": \"543d45f363f1a\", \"name\": \"Dewar's Double2 30yo 46% 0.5L\", \"brand\": \"Dewar's\", \"category\": \"Whisk(e)y\", \"size\": \"0.5 l\", \"sku\": \"HEI-10147\", \"cost\": 132.49, \"offer_date\": \"2026-04-23\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026063\", \"sale_price\": 170.54, \"sale_date\": \"2026-02-28\", \"sale_qty\": 12, \"ws1_price\": 1077.92, \"ws1_company\": \"Pesco Supply\", \"ws2_price\": 382.3, \"ws2_company\": \"jayden-martin@outlook.com\", \"trader_price\": 449.94, \"msrp\": 803.55, \"msrp2\": 978.02, \"min_market\": 382.3, \"max_market\": 1077.92, \"we_cheaper\": true, \"margin_pct\": 65.3, \"margin_eur\": 249.81}, {\"idx\": 22, \"barcode\": \"54c2fd3510de0\", \"name\": \"Martell Cordon Bl.Ext 40% 1L\", \"brand\": \"Martell\", \"category\": \"Cognac\", \"size\": \"1.0 l\", \"sku\": \"HEI-10154\", \"cost\": 127.2, \"offer_date\": \"2026-04-19\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 1536.52, \"msrp2\": 1225.43, \"min_market\": 1225.43, \"max_market\": 1536.52, \"we_cheaper\": true, \"margin_pct\": 89.6, \"margin_eur\": 1098.23}, {\"idx\": 23, \"barcode\": \"5434fd3d43afe\", \"name\": \"Hennessy X.O 40% 1L GP\", \"brand\": \"Hennessy\", \"category\": \"Cognac\", \"size\": \"1.0 l\", \"sku\": \"HEI-10161\", \"cost\": 125.23, \"offer_date\": \"2026-04-25\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026069\", \"sale_price\": 160.31, \"sale_date\": \"2026-03-12\", \"sale_qty\": 240, \"ws1_price\": 585.31, \"ws1_company\": \"North and South Wholesalers\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 568.16, \"msrp\": 1080.68, \"msrp2\": null, \"min_market\": 568.16, \"max_market\": 1080.68, \"we_cheaper\": true, \"margin_pct\": 78.0, \"margin_eur\": 442.93}, {\"idx\": 24, \"barcode\": \"546ae58e0664b\", \"name\": \"Royal S.25Y SB HEI 40% 0.7L GP\", \"brand\": \"Royal Salute\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10168\", \"cost\": 124.72, \"offer_date\": \"2026-04-14\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026072\", \"sale_price\": 153.93, \"sale_date\": \"2026-03-06\", \"sale_qty\": 60, \"ws1_price\": 648.83, \"ws1_company\": \"North and South Wholesalers\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 619.23, \"msrp\": 996.6, \"msrp2\": 468.0, \"min_market\": 468.0, \"max_market\": 996.6, \"we_cheaper\": true, \"margin_pct\": 73.4, \"margin_eur\": 343.28}, {\"idx\": 25, \"barcode\": \"54068b4a2a715\", \"name\": \"Lancô Genifique TM765700 SET\", \"brand\": \"Lancôme\", \"category\": \"SC / Sets\", \"size\": \"1.0 piece(s)\", \"sku\": \"HEI-10175\", \"cost\": 123.61, \"offer_date\": \"2026-04-16\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": 1274.77, \"ws1_company\": \"North and South Wholesalers\", \"ws2_price\": 219.02, \"ws2_company\": \"Victory Distribution\", \"trader_price\": null, \"msrp\": null, \"msrp2\": null, \"min_market\": 219.02, \"max_market\": 1274.77, \"we_cheaper\": true, \"margin_pct\": 43.6, \"margin_eur\": 95.41}, {\"idx\": 26, \"barcode\": \"54da4bc012d0d\", \"name\": \"Chivas Regal 25y 40% 0.7L GP\", \"brand\": \"Chivas\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10182\", \"cost\": 122.98, \"offer_date\": \"2026-04-22\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026078\", \"sale_price\": 143.26, \"sale_date\": \"2026-04-22\", \"sale_qty\": 60, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 630.0, \"msrp2\": null, \"min_market\": 630.0, \"max_market\": 630.0, \"we_cheaper\": true, \"margin_pct\": 80.5, \"margin_eur\": 507.02}, {\"idx\": 27, \"barcode\": \"54d93fd59f114\", \"name\": \"Royal Brackla 21y 46% 0.7L GP\", \"brand\": \"Royal Brackla\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10189\", \"cost\": 120.9, \"offer_date\": \"2026-04-14\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026081\", \"sale_price\": 152.82, \"sale_date\": \"2026-04-17\", \"sale_qty\": 120, \"ws1_price\": 1125.94, \"ws1_company\": \"Indu World International\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 1356.27, \"msrp2\": 555.17, \"min_market\": 555.17, \"max_market\": 1356.27, \"we_cheaper\": true, \"margin_pct\": 78.2, \"margin_eur\": 434.27}, {\"idx\": 28, \"barcode\": \"545717a07b65b\", \"name\": \"Lancô Absolue LF667800 SET\", \"brand\": \"Lancôme\", \"category\": \"SC / Sets\", \"size\": \"1.0 piece(s)\", \"sku\": \"HEI-10196\", \"cost\": 118.86, \"offer_date\": \"2026-04-16\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026084\", \"sale_price\": 151.78, \"sale_date\": \"2026-03-05\", \"sale_qty\": 120, \"ws1_price\": 1203.95, \"ws1_company\": \"jayden-martin@outlook.com\", \"ws2_price\": 812.23, \"ws2_company\": \"Indu World International\", \"trader_price\": 551.53, \"msrp\": 763.71, \"msrp2\": 1275.76, \"min_market\": 551.53, \"max_market\": 1275.76, \"we_cheaper\": true, \"margin_pct\": 78.4, \"margin_eur\": 432.67}, {\"idx\": 29, \"barcode\": \"544ae4baab996\", \"name\": \"Lancô Absolue L8214400 CR\", \"brand\": \"Lancôme\", \"category\": \"SC / Face\", \"size\": \"60.0 ml\", \"sku\": \"HEI-10203\", \"cost\": 118.86, \"offer_date\": \"2026-04-22\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026087\", \"sale_price\": 141.67, \"sale_date\": \"2026-03-06\", \"sale_qty\": 240, \"ws1_price\": 247.41, \"ws1_company\": \"Indu World International\", \"ws2_price\": 921.93, \"ws2_company\": \"Cosmeticos de Konga\", \"trader_price\": 521.35, \"msrp\": 1397.5, \"msrp2\": 1526.44, \"min_market\": 247.41, \"max_market\": 1526.44, \"we_cheaper\": true, \"margin_pct\": 52.0, \"margin_eur\": 128.55}, {\"idx\": 30, \"barcode\": \"54a84afb36f92\", \"name\": \"Lancô Absolue LF140900 DCR\", \"brand\": \"Lancôme\", \"category\": \"SC / Face\", \"size\": \"60.0 ml\", \"sku\": \"HEI-10210\", \"cost\": 118.86, \"offer_date\": \"2026-04-26\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026090\", \"sale_price\": 145.46, \"sale_date\": \"2026-04-12\", \"sale_qty\": 12, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": 893.38, \"ws2_company\": \"J TRADE & DISTRIBUTION SP ZOO\", \"trader_price\": null, \"msrp\": null, \"msrp2\": null, \"min_market\": 893.38, \"max_market\": 893.38, \"we_cheaper\": true, \"margin_pct\": 86.7, \"margin_eur\": 774.52}, {\"idx\": 31, \"barcode\": \"54bbc2e08dabf\", \"name\": \"Lancô Renergie Mu TM774000 SET\", \"brand\": \"Lancôme\", \"category\": \"SC / Sets\", \"size\": \"1.0 piece(s)\", \"sku\": \"HEI-10217\", \"cost\": 118.86, \"offer_date\": \"2026-04-24\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026093\", \"sale_price\": 134.62, \"sale_date\": \"2026-03-17\", \"sale_qty\": 60, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 665.64, \"msrp\": 1248.31, \"msrp2\": 1185.28, \"min_market\": 665.64, \"max_market\": 1248.31, \"we_cheaper\": true, \"margin_pct\": 82.1, \"margin_eur\": 546.78}, {\"idx\": 32, \"barcode\": \"54efcf213037f\", \"name\": \"Martell XO 40% 1L GP\", \"brand\": \"Martell\", \"category\": \"Cognac\", \"size\": \"1.0 l\", \"sku\": \"HEI-10224\", \"cost\": 118.75, \"offer_date\": \"2026-04-19\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026096\", \"sale_price\": 141.99, \"sale_date\": \"2026-02-27\", \"sale_qty\": 120, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 1098.83, \"msrp2\": 696.96, \"min_market\": 696.96, \"max_market\": 1098.83, \"we_cheaper\": true, \"margin_pct\": 83.0, \"margin_eur\": 578.21}, {\"idx\": 33, \"barcode\": \"548c975bc5424\", \"name\": \"Bowmore 22y 48%  0.7L GP\", \"brand\": \"Bowmore\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10231\", \"cost\": 118.38, \"offer_date\": \"2026-04-21\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": 517.51, \"ws2_company\": \"Bayblue\", \"trader_price\": 460.82, \"msrp\": null, \"msrp2\": null, \"min_market\": 460.82, \"max_market\": 517.51, \"we_cheaper\": true, \"margin_pct\": 74.3, \"margin_eur\": 342.44}, {\"idx\": 34, \"barcode\": \"54bc52834aa03\", \"name\": \"Royal Salute 25yo 0.7L 40% GP\", \"brand\": \"Royal Salute\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10238\", \"cost\": 117.39, \"offer_date\": \"2026-04-25\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": 1006.19, \"ws1_company\": \"Indu World International\", \"ws2_price\": 902.49, \"ws2_company\": \"jayden-martin@outlook.com\", \"trader_price\": null, \"msrp\": 656.31, \"msrp2\": 639.59, \"min_market\": 639.59, \"max_market\": 1006.19, \"we_cheaper\": true, \"margin_pct\": 81.6, \"margin_eur\": 522.2}, {\"idx\": 35, \"barcode\": \"5499345e693f9\", \"name\": \"Joh.Walk Blue L. 40% 0.7L GP\", \"brand\": \"Johnnie Walker\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10245\", \"cost\": 116.98, \"offer_date\": \"2026-04-20\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026105\", \"sale_price\": 147.2, \"sale_date\": \"2026-03-30\", \"sale_qty\": 120, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 900.32, \"msrp2\": 1155.32, \"min_market\": 900.32, \"max_market\": 1155.32, \"we_cheaper\": true, \"margin_pct\": 87.0, \"margin_eur\": 783.34}, {\"idx\": 36, \"barcode\": \"54d82ca05d89e\", \"name\": \"Lancô Absolue TM761300 SET\", \"brand\": \"Lancôme\", \"category\": \"SC / Sets\", \"size\": \"1.0 piece(s)\", \"sku\": \"HEI-10252\", \"cost\": 114.11, \"offer_date\": \"2026-04-15\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 595.25, \"msrp\": 955.99, \"msrp2\": null, \"min_market\": 595.25, \"max_market\": 955.99, \"we_cheaper\": true, \"margin_pct\": 80.8, \"margin_eur\": 481.14}, {\"idx\": 37, \"barcode\": \"549b9056d3122\", \"name\": \"Glenfid Gr.Res. 21y 43.2% 0.7L\", \"brand\": \"Glenfiddich\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10259\", \"cost\": 111.72, \"offer_date\": \"2026-04-14\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026111\", \"sale_price\": 127.81, \"sale_date\": \"2026-03-30\", \"sale_qty\": 600, \"ws1_price\": 838.02, \"ws1_company\": \"Indu World International\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 1234.77, \"msrp2\": 1263.07, \"min_market\": 838.02, \"max_market\": 1263.07, \"we_cheaper\": true, \"margin_pct\": 86.7, \"margin_eur\": 726.3}, {\"idx\": 38, \"barcode\": \"54bd7c15f7f69\", \"name\": \"Lancô Renergie Mu TM773600 SET\", \"brand\": \"Lancôme\", \"category\": \"SC / Sets\", \"size\": \"1.0 piece(s)\", \"sku\": \"HEI-10266\", \"cost\": 109.35, \"offer_date\": \"2026-04-19\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026114\", \"sale_price\": 125.6, \"sale_date\": \"2026-03-04\", \"sale_qty\": 120, \"ws1_price\": 1035.34, \"ws1_company\": \"Indu World International\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 698.01, \"msrp2\": 640.49, \"min_market\": 640.49, \"max_market\": 1035.34, \"we_cheaper\": true, \"margin_pct\": 82.9, \"margin_eur\": 531.14}, {\"idx\": 39, \"barcode\": \"542e163c0bea4\", \"name\": \"Martell Cordon Bl.Cog.40% 1L GP\", \"brand\": \"Martell\", \"category\": \"Cognac\", \"size\": \"1.0 l\", \"sku\": \"HEI-10273\", \"cost\": 109.23, \"offer_date\": \"2026-04-23\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026117\", \"sale_price\": 139.9, \"sale_date\": \"2026-04-23\", \"sale_qty\": 24, \"ws1_price\": 623.37, \"ws1_company\": \"North and South Wholesalers\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 396.55, \"msrp\": 859.16, \"msrp2\": 786.61, \"min_market\": 396.55, \"max_market\": 859.16, \"we_cheaper\": true, \"margin_pct\": 72.5, \"margin_eur\": 287.32}, {\"idx\": 40, \"barcode\": \"543e6ac0f5446\", \"name\": \"Camus XO Borderies 40% 1L GP\", \"brand\": \"Camus\", \"category\": \"Cognac\", \"size\": \"1.0 l\", \"sku\": \"HEI-10280\", \"cost\": 104.77, \"offer_date\": \"2026-04-15\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026120\", \"sale_price\": 130.46, \"sale_date\": \"2026-03-05\", \"sale_qty\": 1200, \"ws1_price\": 698.31, \"ws1_company\": \"Indu World International\", \"ws2_price\": 422.74, \"ws2_company\": \"Cosper Distribution Inc\", \"trader_price\": null, \"msrp\": null, \"msrp2\": null, \"min_market\": 422.74, \"max_market\": 698.31, \"we_cheaper\": true, \"margin_pct\": 75.2, \"margin_eur\": 317.97}, {\"idx\": 41, \"barcode\": \"54ac1db447c03\", \"name\": \"Dalmore Lum. No.3 49.2% 0.7LGP*\", \"brand\": \"Dalmore\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10287\", \"cost\": 103.64, \"offer_date\": \"2026-04-24\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026123\", \"sale_price\": 121.17, \"sale_date\": \"2026-03-28\", \"sale_qty\": 12, \"ws1_price\": 893.64, \"ws1_company\": \"jayden-martin@outlook.com\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": null, \"msrp2\": null, \"min_market\": 893.64, \"max_market\": 893.64, \"we_cheaper\": true, \"margin_pct\": 88.4, \"margin_eur\": 790.0}, {\"idx\": 42, \"barcode\": \"549dcb4211851\", \"name\": \"Bruichladdich Redef.21y50%0.7L\", \"brand\": \"Bruichladdich\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10294\", \"cost\": 103.27, \"offer_date\": \"2026-04-19\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026126\", \"sale_price\": 122.99, \"sale_date\": \"2026-03-23\", \"sale_qty\": 600, \"ws1_price\": 862.93, \"ws1_company\": \"North and South Wholesalers\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 314.01, \"msrp\": 854.49, \"msrp2\": 1218.21, \"min_market\": 314.01, \"max_market\": 1218.21, \"we_cheaper\": true, \"margin_pct\": 67.1, \"margin_eur\": 210.74}, {\"idx\": 43, \"barcode\": \"54cf9b807988f\", \"name\": \"Lancô Absolue LF141200 DCR\", \"brand\": \"Lancôme\", \"category\": \"SC / Face\", \"size\": \"60.0 ml\", \"sku\": \"HEI-10301\", \"cost\": 101.04, \"offer_date\": \"2026-04-23\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": 205.35, \"ws2_company\": \"Posh Perfumes&Cosmetics INC\", \"trader_price\": null, \"msrp\": 1363.55, \"msrp2\": 372.45, \"min_market\": 205.35, \"max_market\": 1363.55, \"we_cheaper\": true, \"margin_pct\": 50.8, \"margin_eur\": 104.31}, {\"idx\": 44, \"barcode\": \"542f48d52afb4\", \"name\": \"GF 22 Gran Cortes 0.7L 44.3%*\", \"brand\": \"Glenfiddich\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10308\", \"cost\": 96.05, \"offer_date\": \"2026-04-17\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026132\", \"sale_price\": 108.11, \"sale_date\": \"2026-04-13\", \"sale_qty\": 24, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 374.04, \"msrp\": 1292.01, \"msrp2\": 534.27, \"min_market\": 374.04, \"max_market\": 1292.01, \"we_cheaper\": true, \"margin_pct\": 74.3, \"margin_eur\": 277.99}, {\"idx\": 45, \"barcode\": \"542866728ccd6\", \"name\": \"Yamazaki KogeiC LE 43% 0.7L GP\", \"brand\": \"Yamazaki\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10315\", \"cost\": 94.61, \"offer_date\": \"2026-04-22\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026135\", \"sale_price\": 116.3, \"sale_date\": \"2026-03-12\", \"sale_qty\": 600, \"ws1_price\": 960.94, \"ws1_company\": \"Indu World International\", \"ws2_price\": 157.71, \"ws2_company\": \"Cosmeticos de Konga\", \"trader_price\": null, \"msrp\": null, \"msrp2\": 1174.56, \"min_market\": 157.71, \"max_market\": 1174.56, \"we_cheaper\": true, \"margin_pct\": 40.0, \"margin_eur\": 63.1}, {\"idx\": 46, \"barcode\": \"54706a608d70c\", \"name\": \"Prada Paradoxe TM763800 SET\", \"brand\": \"Prada\", \"category\": \"W's F / Sets\", \"size\": \"1.0 piece(s)\", \"sku\": \"HEI-10322\", \"cost\": 93.66, \"offer_date\": \"2026-04-24\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026138\", \"sale_price\": 116.54, \"sale_date\": \"2026-03-19\", \"sale_qty\": 24, \"ws1_price\": 906.56, \"ws1_company\": \"Pesco Supply\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 851.73, \"msrp2\": null, \"min_market\": 851.73, \"max_market\": 906.56, \"we_cheaper\": true, \"margin_pct\": 89.0, \"margin_eur\": 758.07}, {\"idx\": 47, \"barcode\": \"543cccef5bd70\", \"name\": \"Havana Club 15Y GR 40% 0.7L GP\", \"brand\": \"Havana Club\", \"category\": \"Rum\", \"size\": \"0.7 l\", \"sku\": \"HEI-10329\", \"cost\": 93.25, \"offer_date\": \"2026-04-26\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026141\", \"sale_price\": 110.17, \"sale_date\": \"2026-03-05\", \"sale_qty\": 120, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": 722.23, \"ws2_company\": \"Bayblue\", \"trader_price\": null, \"msrp\": 476.17, \"msrp2\": 766.28, \"min_market\": 476.17, \"max_market\": 766.28, \"we_cheaper\": true, \"margin_pct\": 80.4, \"margin_eur\": 382.92}, {\"idx\": 48, \"barcode\": \"54da6fcae7325\", \"name\": \"Chivas Regal Ultis 40% 0.7L GP\", \"brand\": \"Chivas\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10336\", \"cost\": 91.73, \"offer_date\": \"2026-04-17\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026144\", \"sale_price\": 116.08, \"sale_date\": \"2026-03-25\", \"sale_qty\": 1200, \"ws1_price\": 572.66, \"ws1_company\": \"Indu World International\", \"ws2_price\": 283.97, \"ws2_company\": \"North and South Wholesalers\", \"trader_price\": 348.87, \"msrp\": null, \"msrp2\": null, \"min_market\": 283.97, \"max_market\": 572.66, \"we_cheaper\": true, \"margin_pct\": 67.7, \"margin_eur\": 192.24}, {\"idx\": 49, \"barcode\": \"542aa413d5158\", \"name\": \"Remy M XO Exc. 40% 1L GP\", \"brand\": \"Rémy Martin\", \"category\": \"Cognac\", \"size\": \"1.0 l\", \"sku\": \"HEI-10343\", \"cost\": 91.17, \"offer_date\": \"2026-04-17\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026147\", \"sale_price\": 102.58, \"sale_date\": \"2026-03-05\", \"sale_qty\": 60, \"ws1_price\": 361.36, \"ws1_company\": \"Indu World International\", \"ws2_price\": 658.44, \"ws2_company\": \"Universal Perfumes & Cosmetics Inc.\", \"trader_price\": null, \"msrp\": 813.65, \"msrp2\": 493.55, \"min_market\": 361.36, \"max_market\": 813.65, \"we_cheaper\": true, \"margin_pct\": 74.8, \"margin_eur\": 270.19}, {\"idx\": 50, \"barcode\": \"5436118853486\", \"name\": \"Armani Acqua di Gi LE309600 PF\", \"brand\": \"Giorgio Armani\", \"category\": \"M's Fragrances\", \"size\": \"200.0 ml\", \"sku\": \"HEI-10350\", \"cost\": 90.81, \"offer_date\": \"2026-04-21\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026150\", \"sale_price\": 114.1, \"sale_date\": \"2026-03-15\", \"sale_qty\": 120, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 529.13, \"msrp2\": null, \"min_market\": 529.13, \"max_market\": 529.13, \"we_cheaper\": true, \"margin_pct\": 82.8, \"margin_eur\": 438.32}, {\"idx\": 51, \"barcode\": \"542e2f5e826f3\", \"name\": \"Armani Acqua di Gi LE311400 PF\", \"brand\": \"Giorgio Armani\", \"category\": \"M's Fragrances\", \"size\": \"200.0 ml\", \"sku\": \"HEI-10357\", \"cost\": 90.81, \"offer_date\": \"2026-04-23\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": 676.12, \"ws1_company\": \"Indu World International\", \"ws2_price\": 576.51, \"ws2_company\": \"Victory Distribution\", \"trader_price\": 346.44, \"msrp\": 537.65, \"msrp2\": null, \"min_market\": 346.44, \"max_market\": 676.12, \"we_cheaper\": true, \"margin_pct\": 73.8, \"margin_eur\": 255.63}, {\"idx\": 52, \"barcode\": \"54d71a1ed3bac\", \"name\": \"Hibiki Sp. Tr. Ed 2023 43% 0.7L\", \"brand\": \"Hibiki\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10364\", \"cost\": 90.66, \"offer_date\": \"2026-04-22\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026156\", \"sale_price\": 110.28, \"sale_date\": \"2026-03-11\", \"sale_qty\": 600, \"ws1_price\": 363.29, \"ws1_company\": \"jayden-martin@outlook.com\", \"ws2_price\": 483.43, \"ws2_company\": \"La mina de oro\", \"trader_price\": null, \"msrp\": null, \"msrp2\": null, \"min_market\": 363.29, \"max_market\": 483.43, \"we_cheaper\": true, \"margin_pct\": 75.0, \"margin_eur\": 272.63}, {\"idx\": 53, \"barcode\": \"54a0a49358154\", \"name\": \"Lancô Renergie Mu TM756700 SET\", \"brand\": \"Lancôme\", \"category\": \"SC / Sets\", \"size\": \"1.0 piece(s)\", \"sku\": \"HEI-10371\", \"cost\": 88.91, \"offer_date\": \"2026-04-23\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026159\", \"sale_price\": 102.45, \"sale_date\": \"2026-04-28\", \"sale_qty\": 600, \"ws1_price\": 408.81, \"ws1_company\": \"Pesco Supply\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 1121.94, \"msrp2\": 1042.67, \"min_market\": 408.81, \"max_market\": 1121.94, \"we_cheaper\": true, \"margin_pct\": 78.3, \"margin_eur\": 319.9}, {\"idx\": 54, \"barcode\": \"54fe847f40acb\", \"name\": \"The Glenlivet Cask.40% 0.7L GP\", \"brand\": \"The Glenlivet\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10378\", \"cost\": 87.62, \"offer_date\": \"2026-04-18\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026162\", \"sale_price\": 105.68, \"sale_date\": \"2026-04-07\", \"sale_qty\": 24, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": 622.21, \"ws2_company\": \"North and South Wholesalers\", \"trader_price\": null, \"msrp\": 374.83, \"msrp2\": null, \"min_market\": 374.83, \"max_market\": 622.21, \"we_cheaper\": true, \"margin_pct\": 76.6, \"margin_eur\": 287.21}, {\"idx\": 55, \"barcode\": \"54bd9146c102b\", \"name\": \"Courvoisier XO 40% 1L GP\", \"brand\": \"Courvoisier\", \"category\": \"Cognac\", \"size\": \"1.0 l\", \"sku\": \"HEI-10385\", \"cost\": 86.94, \"offer_date\": \"2026-04-27\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026165\", \"sale_price\": 110.07, \"sale_date\": \"2026-02-27\", \"sale_qty\": 60, \"ws1_price\": 376.58, \"ws1_company\": \"jayden-martin@outlook.com\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 781.33, \"msrp2\": 645.72, \"min_market\": 376.58, \"max_market\": 781.33, \"we_cheaper\": true, \"margin_pct\": 76.9, \"margin_eur\": 289.64}, {\"idx\": 56, \"barcode\": \"5495873b9d5c4\", \"name\": \"Chivas Regal12y 40% 4.5L crad.\", \"brand\": \"Chivas\", \"category\": \"Whisk(e)y\", \"size\": \"4.5 l\", \"sku\": \"HEI-10392\", \"cost\": 86.13, \"offer_date\": \"2026-04-14\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026168\", \"sale_price\": 103.11, \"sale_date\": \"2026-03-23\", \"sale_qty\": 240, \"ws1_price\": 998.51, \"ws1_company\": \"Pesco Supply\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 244.96, \"msrp\": 443.49, \"msrp2\": 323.04, \"min_market\": 244.96, \"max_market\": 998.51, \"we_cheaper\": true, \"margin_pct\": 64.8, \"margin_eur\": 158.83}, {\"idx\": 57, \"barcode\": \"54be0e9c91f8b\", \"name\": \"Dewar's Double2 26yo 46% 0.5L\", \"brand\": \"Dewar's\", \"category\": \"Whisk(e)y\", \"size\": \"0.5 l\", \"sku\": \"HEI-10399\", \"cost\": 84.79, \"offer_date\": \"2026-04-27\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026171\", \"sale_price\": 105.49, \"sale_date\": \"2026-03-29\", \"sale_qty\": 60, \"ws1_price\": 401.79, \"ws1_company\": \"Indu World International\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 1119.32, \"msrp2\": null, \"min_market\": 401.79, \"max_market\": 1119.32, \"we_cheaper\": true, \"margin_pct\": 78.9, \"margin_eur\": 317.0}, {\"idx\": 58, \"barcode\": \"54626c3f12bf9\", \"name\": \"YSL Libre LE227400 EDPS\", \"brand\": \"Yves Saint Laurent\", \"category\": \"W's Fragrances\", \"size\": \"90.0 ml\", \"sku\": \"HEI-10406\", \"cost\": 84.63, \"offer_date\": \"2026-04-17\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026174\", \"sale_price\": 107.03, \"sale_date\": \"2026-04-16\", \"sale_qty\": 120, \"ws1_price\": 346.4, \"ws1_company\": \"North and South Wholesalers\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 443.65, \"msrp2\": 887.73, \"min_market\": 346.4, \"max_market\": 887.73, \"we_cheaper\": true, \"margin_pct\": 75.6, \"margin_eur\": 261.77}, {\"idx\": 59, \"barcode\": \"54feeff0de9ac\", \"name\": \"Hine XO 40% 0.7L GP*\", \"brand\": \"Hine\", \"category\": \"Cognac\", \"size\": \"0.7 l\", \"sku\": \"HEI-10413\", \"cost\": 83.42, \"offer_date\": \"2026-04-18\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": 548.96, \"ws1_company\": \"Indu World International\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 724.49, \"msrp2\": 283.51, \"min_market\": 283.51, \"max_market\": 724.49, \"we_cheaper\": true, \"margin_pct\": 70.6, \"margin_eur\": 200.09}, {\"idx\": 60, \"barcode\": \"54930d0953dac\", \"name\": \"Glenm Signet 46% 0.7L\", \"brand\": \"Glenmorangie\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10420\", \"cost\": 82.86, \"offer_date\": \"2026-04-21\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": 247.59, \"ws2_company\": \"Bayblue\", \"trader_price\": null, \"msrp\": 1117.22, \"msrp2\": null, \"min_market\": 247.59, \"max_market\": 1117.22, \"we_cheaper\": true, \"margin_pct\": 66.5, \"margin_eur\": 164.73}, {\"idx\": 61, \"barcode\": \"54076223408ba\", \"name\": \"Royal S.21yo Polo M.40% 0.7LGP\", \"brand\": \"Royal Salute\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10427\", \"cost\": 82.78, \"offer_date\": \"2026-04-17\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": 793.34, \"ws1_company\": \"North and South Wholesalers\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": null, \"msrp2\": 732.88, \"min_market\": 732.88, \"max_market\": 793.34, \"we_cheaper\": true, \"margin_pct\": 88.7, \"margin_eur\": 650.1}, {\"idx\": 62, \"barcode\": \"54501eccba2ad\", \"name\": \"Prada Paradoxe LF209600 PF\", \"brand\": \"Prada\", \"category\": \"W's Fragrances\", \"size\": \"90.0 ml\", \"sku\": \"HEI-10434\", \"cost\": 82.73, \"offer_date\": \"2026-04-17\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 380.42, \"msrp2\": 588.74, \"min_market\": 380.42, \"max_market\": 588.74, \"we_cheaper\": true, \"margin_pct\": 78.3, \"margin_eur\": 297.69}, {\"idx\": 63, \"barcode\": \"5466ee5d1a55e\", \"name\": \"Armani Sì LF275300 PF\", \"brand\": \"Giorgio Armani\", \"category\": \"W's Fragrances\", \"size\": \"100.0 ml\", \"sku\": \"HEI-10441\", \"cost\": 79.88, \"offer_date\": \"2026-04-20\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026189\", \"sale_price\": 103.06, \"sale_date\": \"2026-03-07\", \"sale_qty\": 1200, \"ws1_price\": 514.37, \"ws1_company\": \"Indu World International\", \"ws2_price\": 180.01, \"ws2_company\": \"Cosper Distribution Inc\", \"trader_price\": null, \"msrp\": null, \"msrp2\": 934.09, \"min_market\": 180.01, \"max_market\": 934.09, \"we_cheaper\": true, \"margin_pct\": 55.6, \"margin_eur\": 100.13}, {\"idx\": 64, \"barcode\": \"543bfa06c3eb1\", \"name\": \"Lancô Genifique LE804400 SER\", \"brand\": \"Lancôme\", \"category\": \"SC / Face\", \"size\": \"100.0 ml\", \"sku\": \"HEI-10448\", \"cost\": 79.88, \"offer_date\": \"2026-04-20\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026192\", \"sale_price\": 92.16, \"sale_date\": \"2026-04-05\", \"sale_qty\": 240, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 740.23, \"msrp2\": null, \"min_market\": 740.23, \"max_market\": 740.23, \"we_cheaper\": true, \"margin_pct\": 89.2, \"margin_eur\": 660.35}, {\"idx\": 65, \"barcode\": \"54a9da044e387\", \"name\": \"Valent Born in LF414100 PF\", \"brand\": \"Valentino\", \"category\": \"W's Fragrances\", \"size\": \"100.0 ml\", \"sku\": \"HEI-10455\", \"cost\": 79.88, \"offer_date\": \"2026-04-20\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": 167.31, \"ws1_company\": \"North and South Wholesalers\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 164.13, \"msrp\": 468.05, \"msrp2\": null, \"min_market\": 164.13, \"max_market\": 468.05, \"we_cheaper\": true, \"margin_pct\": 51.3, \"margin_eur\": 84.25}, {\"idx\": 66, \"barcode\": \"5497d56ebf4a4\", \"name\": \"Grey Goose Vodka 40% 3L\", \"brand\": \"Grey Goose\", \"category\": \"Vodka\", \"size\": \"3.0 l\", \"sku\": \"HEI-10462\", \"cost\": 79.13, \"offer_date\": \"2026-04-26\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026198\", \"sale_price\": 90.3, \"sale_date\": \"2026-03-06\", \"sale_qty\": 24, \"ws1_price\": 720.82, \"ws1_company\": \"Indu World International\", \"ws2_price\": 366.87, \"ws2_company\": \"J TRADE & DISTRIBUTION SP ZOO\", \"trader_price\": 332.75, \"msrp\": 1042.9, \"msrp2\": 933.2, \"min_market\": 332.75, \"max_market\": 1042.9, \"we_cheaper\": true, \"margin_pct\": 76.2, \"margin_eur\": 253.62}, {\"idx\": 67, \"barcode\": \"54bdfa2ded7ef\", \"name\": \"Patrón Repos El Alto 40% 70CL\", \"brand\": \"Patrón\", \"category\": \"Tequila\", \"size\": \"0.7 l\", \"sku\": \"HEI-10469\", \"cost\": 78.42, \"offer_date\": \"2026-04-14\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026201\", \"sale_price\": 98.74, \"sale_date\": \"2026-03-05\", \"sale_qty\": 120, \"ws1_price\": 771.24, \"ws1_company\": \"Indu World International\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 250.49, \"msrp\": 1096.98, \"msrp2\": 351.79, \"min_market\": 250.49, \"max_market\": 1096.98, \"we_cheaper\": true, \"margin_pct\": 68.7, \"margin_eur\": 172.07}, {\"idx\": 68, \"barcode\": \"54d42120c525e\", \"name\": \"YSL Libre Le LD857200 EDPS\", \"brand\": \"Yves Saint Laurent\", \"category\": \"W's Fragrances\", \"size\": \"90.0 ml\", \"sku\": \"HEI-10476\", \"cost\": 77.5, \"offer_date\": \"2026-04-19\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026204\", \"sale_price\": 91.44, \"sale_date\": \"2026-03-11\", \"sale_qty\": 240, \"ws1_price\": 876.92, \"ws1_company\": \"North and South Wholesalers\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 273.72, \"msrp\": null, \"msrp2\": 479.09, \"min_market\": 273.72, \"max_market\": 876.92, \"we_cheaper\": true, \"margin_pct\": 71.7, \"margin_eur\": 196.22}, {\"idx\": 69, \"barcode\": \"549530225c0ab\", \"name\": \"Armani Acqua di LE312800 EDPS\", \"brand\": \"Giorgio Armani\", \"category\": \"M's Fragrances\", \"size\": \"200.0 ml\", \"sku\": \"HEI-10483\", \"cost\": 77.03, \"offer_date\": \"2026-04-20\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": 447.85, \"ws2_company\": \"Bayblue\", \"trader_price\": null, \"msrp\": 299.55, \"msrp2\": 685.71, \"min_market\": 299.55, \"max_market\": 685.71, \"we_cheaper\": true, \"margin_pct\": 74.3, \"margin_eur\": 222.52}, {\"idx\": 70, \"barcode\": \"54c4559c611e8\", \"name\": \"Armani Acqua di LE310600 EDPS\", \"brand\": \"Giorgio Armani\", \"category\": \"M's Fragrances\", \"size\": \"200.0 ml\", \"sku\": \"HEI-10490\", \"cost\": 77.03, \"offer_date\": \"2026-04-14\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026210\", \"sale_price\": 97.99, \"sale_date\": \"2026-04-22\", \"sale_qty\": 240, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": 187.72, \"ws2_company\": \"Bayblue\", \"trader_price\": null, \"msrp\": 901.71, \"msrp2\": 711.19, \"min_market\": 187.72, \"max_market\": 901.71, \"we_cheaper\": true, \"margin_pct\": 59.0, \"margin_eur\": 110.69}, {\"idx\": 71, \"barcode\": \"549f98e9f5b74\", \"name\": \"YSL Black Opium LE090900 EDPS\", \"brand\": \"Yves Saint Laurent\", \"category\": \"W's Fragrances\", \"size\": \"90.0 ml\", \"sku\": \"HEI-10497\", \"cost\": 77.03, \"offer_date\": \"2026-04-21\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026213\", \"sale_price\": 98.08, \"sale_date\": \"2026-03-05\", \"sale_qty\": 600, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": 274.1, \"ws2_company\": \"Certus B.V.\", \"trader_price\": null, \"msrp\": 707.19, \"msrp2\": null, \"min_market\": 274.1, \"max_market\": 707.19, \"we_cheaper\": true, \"margin_pct\": 71.9, \"margin_eur\": 197.07}, {\"idx\": 72, \"barcode\": \"5476a72662c3e\", \"name\": \"RemyMartin XO HeartCog 40%0.7L\", \"brand\": \"Rémy Martin\", \"category\": \"Cognac\", \"size\": \"0.7 l\", \"sku\": \"HEI-10504\", \"cost\": 76.73, \"offer_date\": \"2026-04-24\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026216\", \"sale_price\": 98.66, \"sale_date\": \"2026-04-14\", \"sale_qty\": 600, \"ws1_price\": 903.81, \"ws1_company\": \"Pesco Supply\", \"ws2_price\": 461.22, \"ws2_company\": \"Posh Perfumes&Cosmetics INC\", \"trader_price\": 397.81, \"msrp\": 570.55, \"msrp2\": 637.75, \"min_market\": 397.81, \"max_market\": 903.81, \"we_cheaper\": true, \"margin_pct\": 80.7, \"margin_eur\": 321.08}, {\"idx\": 73, \"barcode\": \"54c6f048f70be\", \"name\": \"Prada Paradoxe LE343600 EDPS\", \"brand\": \"Prada\", \"category\": \"W's Fragrances\", \"size\": \"90.0 ml\", \"sku\": \"HEI-10511\", \"cost\": 76.08, \"offer_date\": \"2026-04-18\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": 272.8, \"ws1_company\": \"jayden-martin@outlook.com\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 429.95, \"msrp\": 634.66, \"msrp2\": 422.49, \"min_market\": 272.8, \"max_market\": 634.66, \"we_cheaper\": true, \"margin_pct\": 72.1, \"margin_eur\": 196.72}, {\"idx\": 74, \"barcode\": \"5493fd19e2639\", \"name\": \"Royal Brackla 18y 46% 0.7L GP\", \"brand\": \"Royal Brackla\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10518\", \"cost\": 75.88, \"offer_date\": \"2026-04-27\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": 359.2, \"ws1_company\": \"North and South Wholesalers\", \"ws2_price\": 580.03, \"ws2_company\": \"Bayblue\", \"trader_price\": 443.76, \"msrp\": 629.56, \"msrp2\": 985.96, \"min_market\": 359.2, \"max_market\": 985.96, \"we_cheaper\": true, \"margin_pct\": 78.9, \"margin_eur\": 283.32}, {\"idx\": 75, \"barcode\": \"54a547980e8a0\", \"name\": \"Bioth Force Supre TM760100 SET\", \"brand\": \"Biotherm\", \"category\": \"SC / Sets\", \"size\": \"1.0 piece(s)\", \"sku\": \"HEI-10525\", \"cost\": 74.65, \"offer_date\": \"2026-04-14\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026225\", \"sale_price\": 86.8, \"sale_date\": \"2026-03-23\", \"sale_qty\": 60, \"ws1_price\": 890.24, \"ws1_company\": \"Indu World International\", \"ws2_price\": 514.73, \"ws2_company\": \"Cosper Distribution Inc\", \"trader_price\": 318.29, \"msrp\": 844.97, \"msrp2\": 676.63, \"min_market\": 318.29, \"max_market\": 890.24, \"we_cheaper\": true, \"margin_pct\": 76.5, \"margin_eur\": 243.64}, {\"idx\": 76, \"barcode\": \"548af9cee71ac\", \"name\": \"Prada Paradoxe TM768900 SET\", \"brand\": \"Prada\", \"category\": \"W's F / Sets\", \"size\": \"1.0 piece(s)\", \"sku\": \"HEI-10532\", \"cost\": 74.43, \"offer_date\": \"2026-04-20\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 387.61, \"msrp\": 409.1, \"msrp2\": 785.67, \"min_market\": 387.61, \"max_market\": 785.67, \"we_cheaper\": true, \"margin_pct\": 80.8, \"margin_eur\": 313.18}, {\"idx\": 77, \"barcode\": \"5416e72adbad0\", \"name\": \"YSL MYSLF LF288200 PF\", \"brand\": \"Yves Saint Laurent\", \"category\": \"M's Fragrances\", \"size\": \"100.0 ml\", \"sku\": \"HEI-10539\", \"cost\": 74.18, \"offer_date\": \"2026-04-15\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": null, \"ws1_company\": null, \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": 500.25, \"msrp2\": 652.47, \"min_market\": 500.25, \"max_market\": 652.47, \"we_cheaper\": true, \"margin_pct\": 85.2, \"margin_eur\": 426.07}, {\"idx\": 78, \"barcode\": \"547faee41c11a\", \"name\": \"YSL Libre LB703100 EDPS\", \"brand\": \"Yves Saint Laurent\", \"category\": \"W's Fragrances\", \"size\": \"90.0 ml\", \"sku\": \"HEI-10546\", \"cost\": 74.18, \"offer_date\": \"2026-04-16\", \"offer_id\": \"HEI-10030176\", \"order_id\": \"ORD-2026234\", \"sale_price\": 95.23, \"sale_date\": \"2026-04-08\", \"sale_qty\": 600, \"ws1_price\": 285.45, \"ws1_company\": \"Indu World International\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": null, \"msrp\": null, \"msrp2\": 834.29, \"min_market\": 285.45, \"max_market\": 834.29, \"we_cheaper\": true, \"margin_pct\": 74.0, \"margin_eur\": 211.27}, {\"idx\": 79, \"barcode\": \"54699f7ebbe8e\", \"name\": \"Glenm Aur. 21YO 43% 0.7L GP\", \"brand\": \"Glenmorangie\", \"category\": \"Whisk(e)y\", \"size\": \"0.7 l\", \"sku\": \"HEI-10553\", \"cost\": 73.73, \"offer_date\": \"2026-04-20\", \"offer_id\": \"HEI-10030176\", \"order_id\": null, \"sale_price\": null, \"sale_date\": null, \"sale_qty\": null, \"ws1_price\": 787.29, \"ws1_company\": \"Pesco Supply\", \"ws2_price\": null, \"ws2_company\": null, \"trader_price\": 369.87, \"msrp\": 781.64, \"msrp2\": null, \"min_market\": 369.87, \"max_market\": 787.29, \"we_cheaper\": true, \"margin_pct\": 80.1, \"margin_eur\": 296.14}], \"kpis\": {\"total_items\": 80, \"with_sale\": 58, \"with_ws1\": 51, \"with_msrp\": 63, \"we_cheaper_count\": 80, \"avg_margin_pct\": 73.6, \"total_opportunity_eur\": 34357.4, \"total_sale_value_eur\": 2259961.68}, \"funnel\": [{\"stage\": \"Items en catálogo\", \"count\": 80, \"pct\": 100.0}, {\"stage\": \"Con oferta activa\", \"count\": 80, \"pct\": 100.0}, {\"stage\": \"Con price discovery\", \"count\": 51, \"pct\": 63.7}, {\"stage\": \"Con MSRP comparado\", \"count\": 63, \"pct\": 78.8}, {\"stage\": \"Con sale en pipeline\", \"count\": 58, \"pct\": 72.5}, {\"stage\": \"Donde somos más baratos\", \"count\": 80, \"pct\": 100.0}], \"top_categories\": [{\"name\": \"Whisk(e)y\", \"count\": 30}, {\"name\": \"Cognac\", \"count\": 14}, {\"name\": \"SC / Sets\", \"count\": 9}, {\"name\": \"W's Fragrances\", \"count\": 8}, {\"name\": \"SC / Face\", \"count\": 6}, {\"name\": \"M's Fragrances\", \"count\": 5}, {\"name\": \"Clear Spirits w Add\", \"count\": 2}, {\"name\": \"W's F / Sets\", \"count\": 2}, {\"name\": \"Champagne\", \"count\": 1}, {\"name\": \"Rum\", \"count\": 1}], \"wholesalers\": [\"Posh Perfumes&Cosmetics INC\", \"North and South Wholesalers\", \"Es nature\", \"Indu World International\", \"jayden-martin@outlook.com\", \"Cosmeticos de Konga\", \"Victory Distribution\", \"Cosper Distribution Inc\", \"J TRADE & DISTRIBUTION SP ZOO\", \"La mina de oro\", \"Bayblue\", \"Certus B.V.\", \"Universal Perfumes & Cosmetics Inc.\"]};",
+        "runWhenPageLoads": true,
+        "description": "Dataset embebido (80 rows + KPIs + funnel + top_categories)"
+      },
+      {
+        "id": "987395399aa2",
+        "name": "detailRows",
+        "type": "JSQuery",
+        "transformer": "const all = {{detailData.value}}.rows;\nconst cat = {{detailCategory.value}} || '';\nconst param = {{detailParam.value}} || 'best_margin';\nlet rows = all.slice();\nif (cat) rows = rows.filter(r => r.category === cat);\nconst cmp = (a,b,k,dir) => {\n  const va = a[k] == null ? (dir==='asc' ? Infinity : -Infinity) : a[k];\n  const vb = b[k] == null ? (dir==='asc' ? Infinity : -Infinity) : b[k];\n  return dir==='asc' ? va-vb : vb-va;\n};\nswitch(param){\n  case 'cheapest':     rows.sort((a,b)=>cmp(a,b,'cost','asc')); break;\n  case 'highest_msrp': rows.sort((a,b)=>cmp(a,b,'msrp','desc')); break;\n  case 'recent_offer': rows.sort((a,b)=>(b.offer_date||'').localeCompare(a.offer_date||'')); break;\n  case 'recent_sale':  rows.sort((a,b)=>{\n    if(!a.sale_date && !b.sale_date) return 0;\n    if(!a.sale_date) return 1;\n    if(!b.sale_date) return -1;\n    return b.sale_date.localeCompare(a.sale_date);\n  }); break;\n  case 'highest_qty':  rows.sort((a,b)=>cmp(a,b,'sale_qty','desc')); break;\n  case 'best_margin':\n  default: rows.sort((a,b)=>cmp(a,b,'margin_pct','desc'));\n}\n// percentile rank for heatmap colors\nconst cols = ['cost','sale_price','sale_qty','ws1_price','ws2_price','trader_price','msrp','msrp2','margin_pct'];\nconst sortedByCol = {};\ncols.forEach(c => sortedByCol[c] = all.map(r=>r[c]).filter(v=>v!=null && !isNaN(v)).sort((a,b)=>a-b));\nconst quintile = (val, sorted, invert) => {\n  if (val==null || isNaN(val) || !sorted.length) return 0;\n  let pos = sorted.findIndex(v=>v>=val);\n  if (pos===-1) pos = sorted.length-1;\n  let pct = pos/Math.max(1, sorted.length-1);\n  if (invert) pct = 1-pct;\n  if (pct>=0.8) return 5;\n  if (pct>=0.6) return 4;\n  if (pct>=0.4) return 3;\n  if (pct>=0.2) return 2;\n  return 1;\n};\nreturn rows.map(r => Object.assign({}, r, {\n  heat_cost: quintile(r.cost, sortedByCol.cost, true),\n  heat_sale_price: quintile(r.sale_price, sortedByCol.sale_price, false),\n  heat_sale_qty: quintile(r.sale_qty, sortedByCol.sale_qty, false),\n  heat_ws1: quintile(r.ws1_price, sortedByCol.ws1_price, false),\n  heat_ws2: quintile(r.ws2_price, sortedByCol.ws2_price, false),\n  heat_trader: quintile(r.trader_price, sortedByCol.trader_price, false),\n  heat_msrp: quintile(r.msrp, sortedByCol.msrp, false),\n  heat_msrp2: quintile(r.msrp2, sortedByCol.msrp2, false),\n  heat_margin: quintile(r.margin_pct, sortedByCol.margin_pct, false)\n}));",
+        "description": "Filas filtradas/ordenadas por parámetro + categoría con heatmap quintile"
+      },
+      {
+        "id": "a073b98be74a",
+        "name": "funnelRows",
+        "type": "JSQuery",
+        "transformer": "return {{detailData.value}}.funnel;"
+      },
+      {
+        "id": "7cabc9804929",
+        "name": "categoryRows",
+        "type": "JSQuery",
+        "transformer": "return {{detailData.value}}.top_categories;"
+      },
+      {
+        "id": "9fadb5d017ee",
+        "name": "categoryOptions",
+        "type": "JSQuery",
+        "transformer": "return [{label:'Todas las categorías', value:''}].concat(({{detailData.value}}.top_categories||[]).map(c=>({label:c.name+' ('+c.count+')', value:c.name})));"
+      },
+      {
+        "id": "0dd18e2955ee",
+        "name": "kpiTotal",
+        "type": "JSQuery",
+        "transformer": "const k={{detailData.value}}.kpis; return k.total_items;"
+      },
+      {
+        "id": "080e1152e10d",
+        "name": "kpiWs1",
+        "type": "JSQuery",
+        "transformer": "const k={{detailData.value}}.kpis; return k.with_ws1;"
+      },
+      {
+        "id": "b2459bfc13b6",
+        "name": "kpiWs1Pct",
+        "type": "JSQuery",
+        "transformer": "const k={{detailData.value}}.kpis; return Math.round(k.with_ws1*100/k.total_items)+'% del catálogo';"
+      },
+      {
+        "id": "f0831f72ad69",
+        "name": "kpiMsrp",
+        "type": "JSQuery",
+        "transformer": "const k={{detailData.value}}.kpis; return k.with_msrp;"
+      },
+      {
+        "id": "391f6747c519",
+        "name": "kpiMsrpPct",
+        "type": "JSQuery",
+        "transformer": "const k={{detailData.value}}.kpis; return Math.round(k.with_msrp*100/k.total_items)+'% del catálogo';"
+      },
+      {
+        "id": "19595ea9b591",
+        "name": "kpiSale",
+        "type": "JSQuery",
+        "transformer": "const k={{detailData.value}}.kpis; return k.with_sale;"
+      },
+      {
+        "id": "201b5496d90d",
+        "name": "kpiSaleVal",
+        "type": "JSQuery",
+        "transformer": "const k={{detailData.value}}.kpis; return k.total_sale_value_eur;"
+      },
+      {
+        "id": "cab36fa2acd2",
+        "name": "kpiMargin",
+        "type": "JSQuery",
+        "transformer": "const k={{detailData.value}}.kpis; return k.avg_margin_pct;"
+      },
+      {
+        "id": "c78025f9148a",
+        "name": "kpiOpp",
+        "type": "JSQuery",
+        "transformer": "const k={{detailData.value}}.kpis; return k.total_opportunity_eur;"
+      }
+    ],
+    "widgets": [
+      {
+        "id": "541efcaab7d8",
+        "name": "title",
+        "type": "text",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "w": 12,
+          "h": 1
+        },
+        "template": {
+          "value": "## Detail Intelligence",
+          "style": {
+            "color": "#F8FAFC"
+          }
+        }
+      },
+      {
+        "id": "d8d98f565d71",
+        "name": "subtitle",
+        "type": "text",
+        "position": {
+          "x": 0,
+          "y": 1,
+          "w": 12,
+          "h": 1
+        },
+        "template": {
+          "value": "Cada fila consolida 6 fuentes · catálogo · ofertas · sales · wholesale 1/2 · trader · MSRP · todo linkeable al origen",
+          "style": {
+            "color": "#94A3B8",
+            "fontSize": 13
+          }
+        }
+      },
+      {
+        "id": "e8c4d4557243",
+        "name": "detailParam",
+        "type": "select",
+        "position": {
+          "x": 0,
+          "y": 2,
+          "w": 3,
+          "h": 1
+        },
+        "template": {
+          "label": "Parámetro de orden",
+          "defaultValue": "best_margin",
+          "values": [
+            {
+              "label": "Mayor margen",
+              "value": "best_margin"
+            },
+            {
+              "label": "Cost más bajo",
+              "value": "cheapest"
+            },
+            {
+              "label": "MSRP más alto",
+              "value": "highest_msrp"
+            },
+            {
+              "label": "Oferta reciente",
+              "value": "recent_offer"
+            },
+            {
+              "label": "Sale reciente",
+              "value": "recent_sale"
+            },
+            {
+              "label": "Mayor cantidad",
+              "value": "highest_qty"
+            }
+          ]
+        }
+      },
+      {
+        "id": "34125852dc85",
+        "name": "detailCategory",
+        "type": "select",
+        "position": {
+          "x": 3,
+          "y": 2,
+          "w": 3,
+          "h": 1
+        },
+        "template": {
+          "label": "Categoría",
+          "defaultValue": "",
+          "data": "{{categoryOptions.value}}"
+        }
+      },
+      {
+        "id": "d40e43b459b4",
+        "name": "detailExport",
+        "type": "button",
+        "position": {
+          "x": 9,
+          "y": 2,
+          "w": 3,
+          "h": 1
+        },
+        "template": {
+          "text": "Exportar CSV",
+          "style": "primary",
+          "onClick": "utils.exportData({{detailRows.value}}, 'detail_intelligence', 'csv')"
+        }
+      },
+      {
+        "id": "8ca759a67b2f",
+        "name": "kpi1_items",
+        "type": "statistic",
+        "position": {
+          "x": 0,
+          "y": 3,
+          "w": 2,
+          "h": 2
+        },
+        "template": {
+          "label": "SKUs activos",
+          "primaryValue": "{{kpiTotal.value}}",
+          "secondaryLabel": "catálogo Heineman",
+          "background": "linear-gradient(135deg, #6D28D9 0%, #8B5CF6 100%)",
+          "color": "#FFFFFF"
+        }
+      },
+      {
+        "id": "6abb42909d5e",
+        "name": "kpi2_ws1",
+        "type": "statistic",
+        "position": {
+          "x": 2,
+          "y": 3,
+          "w": 2,
+          "h": 2
+        },
+        "template": {
+          "label": "Con price discovery",
+          "primaryValue": "{{kpiWs1.value}}",
+          "secondaryLabel": "{{kpiWs1Pct.value}}",
+          "background": "linear-gradient(135deg, #1D4ED8 0%, #3B82F6 100%)",
+          "color": "#FFFFFF"
+        }
+      },
+      {
+        "id": "2c665b2dcf69",
+        "name": "kpi3_msrp",
+        "type": "statistic",
+        "position": {
+          "x": 4,
+          "y": 3,
+          "w": 2,
+          "h": 2
+        },
+        "template": {
+          "label": "Con MSRP comparado",
+          "primaryValue": "{{kpiMsrp.value}}",
+          "secondaryLabel": "{{kpiMsrpPct.value}}",
+          "background": "linear-gradient(135deg, #0E7490 0%, #06B6D4 100%)",
+          "color": "#FFFFFF"
+        }
+      },
+      {
+        "id": "ad414bc528aa",
+        "name": "kpi4_sale",
+        "type": "statistic",
+        "position": {
+          "x": 6,
+          "y": 3,
+          "w": 2,
+          "h": 2
+        },
+        "template": {
+          "label": "Sales en pipeline",
+          "primaryValue": "{{kpiSale.value}}",
+          "secondaryLabel": "€ {{Number({{kpiSaleVal.value}}).toLocaleString('es-ES',{minimumFractionDigits:2})}} valor pipeline",
+          "background": "linear-gradient(135deg, #047857 0%, #10B981 100%)",
+          "color": "#FFFFFF"
+        }
+      },
+      {
+        "id": "6d0ad104bfea",
+        "name": "kpi5_margin",
+        "type": "statistic",
+        "position": {
+          "x": 8,
+          "y": 3,
+          "w": 2,
+          "h": 2
+        },
+        "template": {
+          "label": "Margen promedio",
+          "primaryValue": "{{kpiMargin.value}}%",
+          "secondaryLabel": "vs precio más bajo del mercado",
+          "background": "linear-gradient(135deg, #BE185D 0%, #EC4899 100%)",
+          "color": "#FFFFFF"
+        }
+      },
+      {
+        "id": "b77e0f2a3303",
+        "name": "kpi6_opp",
+        "type": "statistic",
+        "position": {
+          "x": 10,
+          "y": 3,
+          "w": 2,
+          "h": 2
+        },
+        "template": {
+          "label": "Oportunidad total",
+          "primaryValue": "€ {{Number({{kpiOpp.value}}).toLocaleString('es-ES',{minimumFractionDigits:2})}}",
+          "secondaryLabel": "margen acumulable",
+          "background": "linear-gradient(135deg, #B45309 0%, #F59E0B 100%)",
+          "color": "#FFFFFF"
+        }
+      },
+      {
+        "id": "498f1ea24cdc",
+        "name": "funnelTable",
+        "type": "table",
+        "position": {
+          "x": 0,
+          "y": 5,
+          "w": 7,
+          "h": 5
+        },
+        "template": {
+          "title": "Pipeline funnel · desde catálogo a venta",
+          "data": "{{funnelRows.value}}",
+          "columns": [
+            {
+              "id": "5d0ecd756e27",
+              "key": "stage",
+              "label": "Etapa",
+              "format": "string"
+            },
+            {
+              "id": "748ca7885303",
+              "key": "count",
+              "label": "Items",
+              "format": "number",
+              "decimalPlaces": 0
+            },
+            {
+              "id": "f32cb560c4e5",
+              "key": "pct",
+              "label": "%",
+              "format": "number",
+              "decimalPlaces": 1,
+              "suffix": "%",
+              "conditionalFormatting": [
+                {
+                  "id": "44ea37cf3e95",
+                  "condition": "true",
+                  "backgroundColor": "linear-gradient(90deg,#6D28D9,#8B5CF6)",
+                  "textColor": "#FFFFFF"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "4eba412b3a72",
+        "name": "categoryTable",
+        "type": "table",
+        "position": {
+          "x": 7,
+          "y": 5,
+          "w": 5,
+          "h": 5
+        },
+        "template": {
+          "title": "Top categorías",
+          "data": "{{categoryRows.value}}",
+          "columns": [
+            {
+              "id": "e53ff1437289",
+              "key": "name",
+              "label": "Categoría",
+              "format": "tag",
+              "tagColor": "pink"
+            },
+            {
+              "id": "d3dbdee1a2fd",
+              "key": "count",
+              "label": "Items",
+              "format": "number",
+              "decimalPlaces": 0
+            }
+          ],
+          "rowSelectionType": "single",
+          "onRowClick": "detailCategory.setValue({{currentRow.name}}); detailRows.trigger();"
+        }
+      },
+      {
+        "id": "2a82bc5868c0",
+        "name": "detailTable",
+        "type": "table",
+        "position": {
+          "x": 0,
+          "y": 10,
+          "w": 12,
+          "h": 12
+        },
+        "template": {
+          "title": "Detail rows · todas las fuentes consolidadas",
+          "subtitle": "{{detailRows.value.length}} filas · ordenadas por {{detailParam.value}}",
+          "data": "{{detailRows.value}}",
+          "rowHeight": "compact",
+          "stickyHeader": true,
+          "background": "#111726",
+          "headerBackground": "#1E293B",
+          "headerColor": "#E5E7EB",
+          "rowColor": "#E5E7EB",
+          "columns": [
+            {
+              "id": "a72f43708211",
+              "key": "barcode",
+              "label": "Barcode",
+              "visible": true,
+              "format": "string",
+              "openInNewTab": false
+            },
+            {
+              "id": "da12263c1709",
+              "key": "name",
+              "label": "Item",
+              "visible": true,
+              "format": "string",
+              "openInNewTab": false
+            },
+            {
+              "id": "340c3b8a22a9",
+              "key": "brand",
+              "label": "Brand",
+              "visible": true,
+              "format": "string"
+            },
+            {
+              "id": "73b492985b77",
+              "key": "category",
+              "label": "Categoría",
+              "visible": true,
+              "format": "tag",
+              "tagColor": "violet"
+            },
+            {
+              "id": "e19a5f28c21c",
+              "key": "sku",
+              "label": "SKU Heineman",
+              "visible": true,
+              "format": "string"
+            },
+            {
+              "id": "5666445ebe7e",
+              "key": "cost",
+              "label": "Cost",
+              "visible": true,
+              "format": "currency",
+              "currency": "EUR",
+              "decimalPlaces": 2,
+              "conditionalFormatting": [
+                {
+                  "id": "144cb5bf2e7d",
+                  "condition": "{{currentRow.heat_cost}} === 1",
+                  "backgroundColor": "#0F4031",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "9ef910d95354",
+                  "condition": "{{currentRow.heat_cost}} === 2",
+                  "backgroundColor": "#136D45",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "04776624d9f1",
+                  "condition": "{{currentRow.heat_cost}} === 3",
+                  "backgroundColor": "#178757",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "7a01157845a5",
+                  "condition": "{{currentRow.heat_cost}} === 4",
+                  "backgroundColor": "#1AA66B",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "8febb25a7294",
+                  "condition": "{{currentRow.heat_cost}} === 5",
+                  "backgroundColor": "#22C55E",
+                  "textColor": "#FFFFFF"
+                }
+              ]
+            },
+            {
+              "id": "96cdfe7bc55b",
+              "key": "offer_date",
+              "label": "Offer Date",
+              "visible": true,
+              "format": "date"
+            },
+            {
+              "id": "78b8c5e828c0",
+              "key": "order_id",
+              "label": "Order ID",
+              "visible": true,
+              "format": "string"
+            },
+            {
+              "id": "abc0e3ea415e",
+              "key": "sale_price",
+              "label": "Sale Price",
+              "visible": true,
+              "format": "currency",
+              "currency": "EUR",
+              "decimalPlaces": 2,
+              "conditionalFormatting": [
+                {
+                  "id": "5fb454a575b6",
+                  "condition": "{{currentRow.heat_sale_price}} === 1",
+                  "backgroundColor": "#0F4031",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "9df6c6f01e03",
+                  "condition": "{{currentRow.heat_sale_price}} === 2",
+                  "backgroundColor": "#136D45",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "0972ccf45453",
+                  "condition": "{{currentRow.heat_sale_price}} === 3",
+                  "backgroundColor": "#178757",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "dd45dd6f0d62",
+                  "condition": "{{currentRow.heat_sale_price}} === 4",
+                  "backgroundColor": "#1AA66B",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "b64fe9da772c",
+                  "condition": "{{currentRow.heat_sale_price}} === 5",
+                  "backgroundColor": "#22C55E",
+                  "textColor": "#FFFFFF"
+                }
+              ]
+            },
+            {
+              "id": "8270d9a45bc5",
+              "key": "sale_date",
+              "label": "Sale Date",
+              "visible": true,
+              "format": "date"
+            },
+            {
+              "id": "9de8e28da3a7",
+              "key": "sale_qty",
+              "label": "Qty",
+              "visible": true,
+              "format": "number",
+              "decimalPlaces": 0,
+              "conditionalFormatting": [
+                {
+                  "id": "d3d59e0c5cbe",
+                  "condition": "{{currentRow.heat_sale_qty}} === 1",
+                  "backgroundColor": "#0F4031",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "ecba1bddc354",
+                  "condition": "{{currentRow.heat_sale_qty}} === 2",
+                  "backgroundColor": "#136D45",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "0ba5ebe62249",
+                  "condition": "{{currentRow.heat_sale_qty}} === 3",
+                  "backgroundColor": "#178757",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "7857a706aa81",
+                  "condition": "{{currentRow.heat_sale_qty}} === 4",
+                  "backgroundColor": "#1AA66B",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "91f9275f5a3e",
+                  "condition": "{{currentRow.heat_sale_qty}} === 5",
+                  "backgroundColor": "#22C55E",
+                  "textColor": "#FFFFFF"
+                }
+              ]
+            },
+            {
+              "id": "01be79bd7d9f",
+              "key": "ws1_price",
+              "label": "WS1 Price",
+              "visible": true,
+              "format": "currency",
+              "currency": "EUR",
+              "decimalPlaces": 2,
+              "conditionalFormatting": [
+                {
+                  "id": "4341c9626957",
+                  "condition": "{{currentRow.heat_ws1}} === 1",
+                  "backgroundColor": "#172554",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "d0ef465802e1",
+                  "condition": "{{currentRow.heat_ws1}} === 2",
+                  "backgroundColor": "#1E3A8A",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "ba0a059e17f3",
+                  "condition": "{{currentRow.heat_ws1}} === 3",
+                  "backgroundColor": "#2563EB",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "b6cc9791cf85",
+                  "condition": "{{currentRow.heat_ws1}} === 4",
+                  "backgroundColor": "#3B82F6",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "26988e16cfd4",
+                  "condition": "{{currentRow.heat_ws1}} === 5",
+                  "backgroundColor": "#60A5FA",
+                  "textColor": "#FFFFFF"
+                }
+              ]
+            },
+            {
+              "id": "2815cd2cefa5",
+              "key": "ws1_company",
+              "label": "WS1 Company",
+              "visible": true,
+              "format": "string"
+            },
+            {
+              "id": "1c58d652dc7a",
+              "key": "ws2_price",
+              "label": "WS2 Price",
+              "visible": true,
+              "format": "currency",
+              "currency": "EUR",
+              "decimalPlaces": 2,
+              "conditionalFormatting": [
+                {
+                  "id": "d007435eb1d6",
+                  "condition": "{{currentRow.heat_ws2}} === 1",
+                  "backgroundColor": "#0E3A4A",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "0b3a709533eb",
+                  "condition": "{{currentRow.heat_ws2}} === 2",
+                  "backgroundColor": "#0F4D5C",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "650a3e55cbe4",
+                  "condition": "{{currentRow.heat_ws2}} === 3",
+                  "backgroundColor": "#0E7490",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "ab77dcbd9fa8",
+                  "condition": "{{currentRow.heat_ws2}} === 4",
+                  "backgroundColor": "#0891B2",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "72203ecfb298",
+                  "condition": "{{currentRow.heat_ws2}} === 5",
+                  "backgroundColor": "#06B6D4",
+                  "textColor": "#FFFFFF"
+                }
+              ]
+            },
+            {
+              "id": "4a8d11c33442",
+              "key": "ws2_company",
+              "label": "WS2 Company",
+              "visible": true,
+              "format": "string"
+            },
+            {
+              "id": "c7e8f2069b3e",
+              "key": "trader_price",
+              "label": "Trader Price",
+              "visible": true,
+              "format": "currency",
+              "currency": "EUR",
+              "decimalPlaces": 2,
+              "conditionalFormatting": [
+                {
+                  "id": "6756ee021a95",
+                  "condition": "{{currentRow.heat_trader}} === 1",
+                  "backgroundColor": "#451A03",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "61da98ce02e0",
+                  "condition": "{{currentRow.heat_trader}} === 2",
+                  "backgroundColor": "#78350F",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "cb52f8e7809a",
+                  "condition": "{{currentRow.heat_trader}} === 3",
+                  "backgroundColor": "#B45309",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "52fc2a9a0d52",
+                  "condition": "{{currentRow.heat_trader}} === 4",
+                  "backgroundColor": "#D97706",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "cad7dfcf6526",
+                  "condition": "{{currentRow.heat_trader}} === 5",
+                  "backgroundColor": "#F59E0B",
+                  "textColor": "#FFFFFF"
+                }
+              ]
+            },
+            {
+              "id": "17c69b23d282",
+              "key": "msrp",
+              "label": "MSRP",
+              "visible": true,
+              "format": "currency",
+              "currency": "EUR",
+              "decimalPlaces": 2,
+              "conditionalFormatting": [
+                {
+                  "id": "379fdeafdae9",
+                  "condition": "{{currentRow.heat_msrp}} === 1",
+                  "backgroundColor": "#500724",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "0a46a4f31311",
+                  "condition": "{{currentRow.heat_msrp}} === 2",
+                  "backgroundColor": "#831843",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "b9635f4a0e15",
+                  "condition": "{{currentRow.heat_msrp}} === 3",
+                  "backgroundColor": "#BE185D",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "953e3f4ab26e",
+                  "condition": "{{currentRow.heat_msrp}} === 4",
+                  "backgroundColor": "#DB2777",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "33f2158868ef",
+                  "condition": "{{currentRow.heat_msrp}} === 5",
+                  "backgroundColor": "#EC4899",
+                  "textColor": "#FFFFFF"
+                }
+              ]
+            },
+            {
+              "id": "c51a946d1c89",
+              "key": "msrp2",
+              "label": "MSRP 2",
+              "visible": true,
+              "format": "currency",
+              "currency": "EUR",
+              "decimalPlaces": 2,
+              "conditionalFormatting": [
+                {
+                  "id": "73cc796ceda6",
+                  "condition": "{{currentRow.heat_msrp2}} === 1",
+                  "backgroundColor": "#500724",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "095e7c9036b4",
+                  "condition": "{{currentRow.heat_msrp2}} === 2",
+                  "backgroundColor": "#831843",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "4a94b023c3c2",
+                  "condition": "{{currentRow.heat_msrp2}} === 3",
+                  "backgroundColor": "#BE185D",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "949f50c0b43c",
+                  "condition": "{{currentRow.heat_msrp2}} === 4",
+                  "backgroundColor": "#DB2777",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "bfb8c4d4e537",
+                  "condition": "{{currentRow.heat_msrp2}} === 5",
+                  "backgroundColor": "#EC4899",
+                  "textColor": "#FFFFFF"
+                }
+              ]
+            },
+            {
+              "id": "276372f82e4c",
+              "key": "margin_pct",
+              "label": "Margen %",
+              "visible": true,
+              "format": "number",
+              "decimalPlaces": 1,
+              "suffix": "%",
+              "conditionalFormatting": [
+                {
+                  "id": "c50513f67529",
+                  "condition": "{{currentRow.heat_margin}} === 1",
+                  "backgroundColor": "#2E1065",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "42efc6e718a2",
+                  "condition": "{{currentRow.heat_margin}} === 2",
+                  "backgroundColor": "#4C1D95",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "d4ba3e1f8dbd",
+                  "condition": "{{currentRow.heat_margin}} === 3",
+                  "backgroundColor": "#6D28D9",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "dddd95dd0d9b",
+                  "condition": "{{currentRow.heat_margin}} === 4",
+                  "backgroundColor": "#7C3AED",
+                  "textColor": "#FFFFFF"
+                },
+                {
+                  "id": "2f596abf9e05",
+                  "condition": "{{currentRow.heat_margin}} === 5",
+                  "backgroundColor": "#8B5CF6",
+                  "textColor": "#FFFFFF"
+                }
+              ]
+            }
+          ],
+          "groups": [
+            {
+              "label": "ITEM",
+              "background": "linear-gradient(90deg,#6D28D9,#8B5CF6)",
+              "columns": [
+                "barcode",
+                "name",
+                "brand",
+                "category"
+              ]
+            },
+            {
+              "label": "OFFERS WE HAVE",
+              "background": "linear-gradient(90deg,#1D4ED8,#3B82F6)",
+              "columns": [
+                "sku",
+                "cost",
+                "offer_date"
+              ]
+            },
+            {
+              "label": "SALES / NEED LIST",
+              "background": "linear-gradient(90deg,#047857,#10B981)",
+              "columns": [
+                "order_id",
+                "sale_price",
+                "sale_date",
+                "sale_qty"
+              ]
+            },
+            {
+              "label": "WHOLESALE 1",
+              "background": "linear-gradient(90deg,#0E7490,#06B6D4)",
+              "columns": [
+                "ws1_price",
+                "ws1_company"
+              ]
+            },
+            {
+              "label": "WHOLESALE 2",
+              "background": "linear-gradient(90deg,#155E75,#0891B2)",
+              "columns": [
+                "ws2_price",
+                "ws2_company"
+              ]
+            },
+            {
+              "label": "TRADER",
+              "background": "linear-gradient(90deg,#B45309,#F59E0B)",
+              "columns": [
+                "trader_price"
+              ]
+            },
+            {
+              "label": "MSRP",
+              "background": "linear-gradient(90deg,#BE185D,#EC4899)",
+              "columns": [
+                "msrp",
+                "msrp2",
+                "margin_pct"
+              ]
+            }
+          ],
+          "exportEnabled": true,
+          "searchEnabled": true,
+          "rowActions": [
+            {
+              "label": "Abrir en HubSpot",
+              "openUrl": "https://app.hubspot.com/contacts/148358528/objects/0-1/views/all/list?searchString={{currentRow.brand}}"
+            },
+            {
+              "label": "Buscar en Slack",
+              "openUrl": "https://app.slack.com/client/T0B05EVQ19A/C0B08DKCUBU?query={{currentRow.barcode}}"
+            },
+            {
+              "label": "Buscar MSRP en Amazon",
+              "openUrl": "https://www.amazon.com/s?k={{encodeURIComponent(currentRow.brand+' '+currentRow.name)}}"
+            }
+          ]
+        }
+      }
+    ],
+    "metadata": {
+      "source": "BAST Dashboard v5 · Detail Intelligence",
+      "totalRows": 80,
+      "kpis": {
+        "total_items": 80,
+        "with_sale": 58,
+        "with_ws1": 51,
+        "with_msrp": 63,
+        "we_cheaper_count": 80,
+        "avg_margin_pct": 73.6,
+        "total_opportunity_eur": 34357.4,
+        "total_sale_value_eur": 2259961.68
+      },
+      "buildTimestamp": "2026-04-28T18:25:14.000Z",
+      "notes": [
+        "Importar desde Retool > Apps > Create new > From JSON/ZIP.",
+        "Si Retool reporta versión incompatible: abrir el JSON, ajustar 'retoolFormatVersion' al valor que muestre tu instancia.",
+        "El dataset está embebido en la query 'detailData'. Para conectar a fuente real, reemplazá esa query por una hacia tu Resource (Postgres/Supabase/REST) y mantené la misma forma de fila.",
+        "Los grupos de columnas y los gradientes de color usan keys propias de v3+ del table widget."
+      ]
+    }
+  },
+  "kind": "App"
+}
